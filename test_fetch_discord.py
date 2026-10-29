@@ -45,6 +45,14 @@ class NormalizeTest(unittest.TestCase):
         self.assertEqual(entry["embeds"], [{"title": "Judul", "url": "https://berita.example/a",
                                             "image": "https://berita.example/a.jpg"}])
 
+    def test_forwarded_message_uses_snapshot_content(self):
+        m = msg(6, content="", message_snapshots=[{"message": {
+            "content": "Update besar", "embeds": [{"title": "Patch"}], "attachments": []}}])
+        self.assertTrue(fd.is_archivable(m))
+        entry = fd.normalize(m, "updates")
+        self.assertEqual(entry["content"], "Update besar")
+        self.assertEqual(entry["embeds"], [{"title": "Patch"}])
+
     def test_media_filename_cannot_escape_media_dir(self):
         self.assertNotIn("/", fd._safe_name("../../etc/passwd"))
         self.assertEqual(fd.keep_media("http://cdn.discordapp.com/x.png", "1"),

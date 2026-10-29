@@ -14,6 +14,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -143,19 +144,35 @@ def _clean_embed(embed: dict, message_id: str) -> dict:
     return {k: v for k, v in out.items() if v not in (None, "", [])}
 
 
+def _has_body(message: dict) -> bool:
+    return bool(message.get("content") or message.get("embeds") or message.get("attachments"))
+
+
+def _body(message: dict) -> dict:
+    """Bagian yang berisi teks, embed, dan lampiran.
+
+    Pesan yang di-forward kosong di luar; isinya ada di message_snapshots[0].message.
+    """
+    if _has_body(message):
+        return message
+    snapshots = message.get("message_snapshots") or []
+    return (snapshots[0].get("message") or {}) if snapshots else message
+
+
 def is_archivable(message: dict) -> bool:
     """Lewati pesan sistem (join, pin, boost) dan pesan kosong."""
     if message.get("type", 0) not in ARCHIVED_TYPES:
         return False
-    return bool(message.get("content") or message.get("embeds") or message.get("attachments"))
+    return _has_body(_body(message))
 
 
 def normalize(message: dict, channel_name: str) -> dict:
     """Ambil hanya bagian pesan yang perlu ditampilkan di situs."""
     msg_id = message["id"]
     author = message.get("author") or {}
+    body = _body(message)
     attachments = []
-    for att in message.get("attachments") or []:
+    for att in body.get("attachments") or []:
         is_image = (att.get("content_type") or "").startswith("image/")
         attachments.append({
             "name": att.get("filename", "berkas"),
@@ -168,8 +185,8 @@ def normalize(message: dict, channel_name: str) -> dict:
         "channel": channel_name,
         "ts": message["timestamp"],
         "author": author.get("global_name") or author.get("username") or "?",
-        "content": message.get("content", ""),
-        "embeds": [_clean_embed(e, msg_id) for e in message.get("embeds") or []],
+        "content": body.get("content", ""),
+        "embeds": [_clean_embed(e, msg_id) for e in body.get("embeds") or []],
         "attachments": attachments,
     }
 
@@ -240,7 +257,11 @@ def main() -> int:
         merge_into_days(entries)
         state[channel_id] = raw[-1]["id"]
         total += len(entries)
-        print(f"#{name}: {len(entries)} pesan baru")
+        print(f"#{name}: {len(entries)} pesan baru dari {len(raw)} yang diambil")
+        skipped = Counter(f"tipe {m.get('type', 0)}" for m in raw if not is_archivable(m))
+        if skipped:
+            # Supaya pesan yang terbuang bisa didiagnosis dari log Actions (tanpa isi pesan).
+            print(f"  dilewati: {dict(skipped)}")
 
     # Index hanya ditulis ulang kalau ada isi baru. Kalau tiap run menulis cap waktu baru,
     # tiap run (tiap 30 menit) menghasilkan commit dan deploy Vercel walau tidak ada berita.
