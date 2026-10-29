@@ -1,3 +1,6 @@
 __pycache__/
 .env
 .vercel
+.impeccable/review/
+.impeccable/build/
+.impeccable/questions/
