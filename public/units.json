@@ -14,7 +14,7 @@
     {"name": "Pantsir-S1", "faction": "Eastern", "category": "Iron Dome", "drones": 1100, "missiles": 1100, "guns": 420, "altitude": 1000, "ammo": 12, "rearm": 6, "cooldown": 3},
     {"name": "Aquila", "faction": "French", "category": "Arrow 3", "drones": null, "missiles": 4000, "guns": null, "altitude": 12000, "ammo": 6, "rearm": 45, "cooldown": 4},
     {"name": "SAMP/T", "faction": "French", "category": "PAC-3", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200, "ammo": 16, "rearm": 30, "cooldown": 3},
-    {"name": "VL MICA", "faction": "French", "category": "Patriot Battery", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200, "ammo": null, "rearm": 30, "cooldown": 3},
+    {"name": "VL MICA", "faction": "French", "category": "Patriot Battery", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200, "ammo": 4, "rearm": 30, "cooldown": 3},
     {"name": "Mistral", "faction": "French", "category": "Iron Dome", "drones": 850, "missiles": 700, "guns": null, "altitude": 350, "ammo": 4, "rearm": 6, "cooldown": 3}
    ]
   }
