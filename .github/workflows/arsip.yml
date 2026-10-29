@@ -2,12 +2,11 @@ name: Arsip Discord
 
 on:
   schedule:
-    # Tiap 30 menit. Di repo privat, satu run ~1 menit tagihan menit Actions, jadi
-    # 48 run/hari ≈ 1.440 menit/bulan, masih di bawah kuota gratis 2.000 menit.
-    # Di repo publik menit Actions gratis, jadi boleh dipercepat.
-    # Menit 17 dan 47, bukan 00/30: di menit bulat antrean GitHub penuh dan jadwal
-    # sering telat atau dilewati.
-    - cron: "17,47 * * * *"
+    # 7 kali per jam. Repo ini publik, jadi menit Actions gratis; kalau repo dijadikan
+    # privat lagi, kuota 2.000 menit/bulan habis sekitar hari ke-12, jadi kurangi ke
+    # 2 kali per jam. Menitnya sengaja tidak bulat: di menit 00/30 antrean GitHub penuh
+    # dan jadwal sering telat atau dilewati.
+    - cron: "3,14,17,24,38,47,56 * * * *"
   workflow_dispatch: # tombol "Run workflow" untuk uji manual
 
 permissions:
