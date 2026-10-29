@@ -1,0 +1,52 @@
+name: Arsip Discord
+
+on:
+  schedule:
+    # Tiap 30 menit. Di repo privat, satu run ~1 menit tagihan menit Actions, jadi
+    # 48 run/hari ≈ 1.440 menit/bulan, masih di bawah kuota gratis 2.000 menit.
+    # Di repo publik menit Actions gratis, jadi boleh dipercepat ke */10.
+    - cron: "*/30 * * * *"
+  workflow_dispatch: # tombol "Run workflow" untuk uji manual
+
+permissions:
+  contents: write
+
+concurrency:
+  group: arsip-discord
+  cancel-in-progress: false
+
+jobs:
+  arsip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Uji
+        run: python -m unittest -q
+
+      - name: Ambil pesan baru
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_IDS: ${{ secrets.DISCORD_CHANNEL_IDS }}
+        run: python fetch_discord.py
+
+      # Push inilah yang memicu Vercel membangun ulang situs.
+      - name: Simpan arsip ke repo
+        run: |
+          if [ -z "$(git status --porcelain public/ state.json)" ]; then
+            echo "Tidak ada berita baru; lewati commit."
+            exit 0
+          fi
+          # Vercel paket Hobby hanya men-deploy commit yang penulisnya pemilik akun;
+          # commit atas nama github-actions[bot] akan diblokir.
+          git config user.name "AnotherUserU"
+          git config user.email "135497792+AnotherUserU@users.noreply.github.com"
+          git add public/ state.json
+          git commit -m "data: arsip discord $(date -u -d '+7 hours' '+%Y-%m-%d %H:%M')"
+          git push

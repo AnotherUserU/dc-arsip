@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arsip Discord</title>
+  <meta name="description" content="Arsip mentah pesan dari server Discord.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <div>
+        <h1>Arsip Discord</h1>
+        <p class="meta" id="meta">Memuat arsip…</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <span class="sr-only">Cari pesan</span>
+          <input id="q" type="search" placeholder="Cari di seluruh arsip…" autocomplete="off">
+        </label>
+        <label>
+          <span class="sr-only">Filter channel</span>
+          <select id="channel"><option value="">Semua channel</option></select>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <nav class="days" aria-label="Tanggal arsip">
+      <h2>Tanggal</h2>
+      <ol id="day-list"></ol>
+    </nav>
+    <main>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <div id="feed"></div>
+      <button class="more" id="more" type="button" hidden>Muat hari sebelumnya</button>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
