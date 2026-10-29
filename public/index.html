@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Build And Conqueror · Arsip Siaran</title>
-  <meta name="description" content="Arsip siaran server Discord Build And Conqueror.">
+  <title data-i18n="archiveTitle">Build And Conqueror · Arsip Siaran</title>
+  <meta name="description" data-i18n-content="archiveDescription" content="Arsip siaran server Discord Build And Conqueror.">
   <meta name="theme-color" content="#18201c">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,26 +13,29 @@
 </head>
 <body>
   <header class="cartouche">
+    <div class="lang-switch" role="group" data-i18n-label="language" aria-label="Bahasa">
+      <button type="button" data-lang="id">ID</button><button type="button" data-lang="en">EN</button>
+    </div>
     <div class="title-block">
       <h1>Build And<br>Conqueror</h1>
-      <p class="subtitle">Arsip siaran server</p>
-      <p class="meta" id="meta">Membuka arsip…</p>
-      <nav class="pages" aria-label="Halaman"><a href="unit.html">Perbandingan unit</a></nav>
+      <p class="subtitle" data-i18n="archiveSubtitle">Arsip siaran server</p>
+      <p class="meta" id="meta" data-i18n="opening">Membuka arsip…</p>
+      <nav class="pages" data-i18n-label="pages" aria-label="Halaman"><a href="unit.html" data-i18n="unitsLink">Perbandingan unit</a></nav>
     </div>
     <form class="tools" id="tools" role="search">
       <label class="field field-search">
-        <span>Cari laporan</span>
-        <input id="q" type="search" placeholder="faksi, perang, nama…" autocomplete="off">
+        <span data-i18n="search">Cari laporan</span>
+        <input id="q" type="search" data-i18n-placeholder="searchHint" placeholder="faksi, perang, nama…" autocomplete="off">
       </label>
       <label class="field">
-        <span>Channel</span>
-        <select id="channel"><option value="">Semua channel</option></select>
+        <span data-i18n="channel">Channel</span>
+        <select id="channel"><option value="" data-i18n="allChannels">Semua channel</option></select>
       </label>
     </form>
   </header>
 
   <div class="table">
-    <nav class="rail" aria-label="Tanggal arsip">
+    <nav class="rail" data-i18n-label="archiveDates" aria-label="Tanggal arsip">
       <ol id="day-list"></ol>
     </nav>
     <main class="desk">
@@ -40,21 +43,22 @@
       <div id="feed" aria-busy="true">
         <div class="sheet sheet-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
       </div>
-      <button class="more" id="more" type="button" hidden>Muat hari sebelumnya</button>
+      <button class="more" id="more" type="button" data-i18n="loadMore" hidden>Muat hari sebelumnya</button>
     </main>
   </div>
 
-  <dialog class="lightbox" id="lightbox" aria-label="Gambar lampiran">
+  <dialog class="lightbox" id="lightbox" data-i18n-label="attachmentImage" aria-label="Gambar lampiran">
     <figure>
       <img id="lightbox-img" alt="">
       <figcaption>
         <span id="lightbox-name"></span>
-        <a id="lightbox-open" target="_blank" rel="noopener noreferrer">Buka file asli</a>
-        <button type="button" id="lightbox-close">Tutup</button>
+        <a id="lightbox-open" target="_blank" rel="noopener noreferrer" data-i18n="openOriginal">Buka file asli</a>
+        <button type="button" id="lightbox-close" data-i18n="close">Tutup</button>
       </figcaption>
     </figure>
   </dialog>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

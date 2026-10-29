@@ -54,6 +54,7 @@ a { color: inherit; text-decoration-color: var(--pencil); text-decoration-thickn
 /* --- Blok judul peta -------------------------------------------------- */
 
 .cartouche {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
   align-items: end;
@@ -314,6 +315,24 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
   cursor: pointer;
 }
 .lightbox button:hover { border-color: var(--chalk); }
+
+/* --- Pilihan bahasa: pojok kanan atas blok judul ------------------------ */
+
+.lang-switch { position: absolute; top: 12px; right: 14px; display: flex; gap: 2px; }
+.lang-switch button {
+  min-width: 44px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  color: var(--chalk-dim);
+  font: 700 0.875rem var(--font);
+  font-stretch: 68%;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.lang-switch button:hover { color: var(--chalk); }
+.lang-switch button[aria-pressed="true"] { color: var(--chalk); text-decoration: underline 2px var(--pencil); text-underline-offset: 5px; }
 
 /* --- Tautan antarhalaman ------------------------------------------------ */
 

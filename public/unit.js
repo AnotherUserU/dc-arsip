@@ -5,31 +5,32 @@
 // Tabel dibalik: kolom = unit, baris = statistik, supaya 7 statistik tetap muat saat
 // tiga tabel berjajar. "better" menentukan angka mana yang ditebalkan; "empty" adalah
 // teks untuk nilai null (tidak punya senjata itu, atau datanya belum ada).
+// Label baris diambil dari kamus i18n.js lewat kuncinya.
 const GROUPS = [
-  { title: "Jangkauan (meter)", empty: "tidak", rows: [
-    { key: "drones", label: "Drone", better: "high" },
-    { key: "missiles", label: "Rudal", better: "high" },
-    { key: "guns", label: "Meriam", better: "high" },
-    { key: "altitude", label: "Tinggi maks", better: "high" },
+  { title: t("groupRange"), empty: t("cannot"), rows: [
+    { key: "drones", better: "high" },
+    { key: "missiles", better: "high" },
+    { key: "guns", better: "high" },
+    { key: "altitude", better: "high" },
   ] },
-  { title: "Tembakan", empty: "?", rows: [
-    { key: "ammo", label: "Amunisi", better: "high" },
-    { key: "rearm", label: "Isi ulang", better: "low", unit: " dtk" },
-    { key: "cooldown", label: "Jeda tembak", better: "low", unit: " dtk" },
+  { title: t("groupFiring"), empty: "?", rows: [
+    { key: "ammo", better: "high" },
+    { key: "rearm", better: "low", unit: t("seconds") },
+    { key: "cooldown", better: "low", unit: t("seconds") },
   ] },
 ];
 const ROWS = GROUPS.flatMap((g) => g.rows);
 
 const $ = (id) => document.getElementById(id);
 const els = { type: $("type"), category: $("category"), sort: $("sort"), tables: $("tables"), title: $("units-title"), status: $("status") };
-const numbers = new Intl.NumberFormat("id-ID");
+const numbers = new Intl.NumberFormat(LOCALE);
 let types = [];
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
-const currentType = () => types.find((t) => t.id === els.type.value) || types[0];
+const currentType = () => types.find((type) => type.id === els.type.value) || types[0];
 const unique = (values) => [...new Set(values)];
 
 function cell(value, row, best, empty) {
@@ -41,8 +42,8 @@ function renderTable(faction, units, best) {
   const head = units.map((u) => `<th scope="col">${esc(u.name)}<small>${esc(u.category)}</small></th>`).join("");
   const body = GROUPS.map((g) => `
       <tr class="group"><th scope="colgroup" colspan="${units.length + 1}">${g.title}</th></tr>
-      ${g.rows.map((row) => `<tr><th scope="row">${row.label}</th>${units.map((u) => cell(u[row.key], row, best, g.empty)).join("")}</tr>`).join("")}`).join("");
-  return `<section class="sheet faction-sheet" aria-label="Faksi ${esc(faction)}">
+      ${g.rows.map((row) => `<tr><th scope="row">${t(row.key)}</th>${units.map((u) => cell(u[row.key], row, best, g.empty)).join("")}</tr>`).join("")}`).join("");
+  return `<section class="sheet faction-sheet" aria-label="${esc(t("faction", { name: faction }))}">
     <h3>${esc(faction)}</h3>
     <table class="unit-table">
       <thead><tr><td></td>${head}</tr></thead>
@@ -82,7 +83,7 @@ function render() {
 function fillCategories() {
   const current = els.category.value;
   const categories = unique(currentType().units.map((u) => u.category));
-  els.category.innerHTML = `<option value="">Semua</option>` +
+  els.category.innerHTML = `<option value="">${t("all")}</option>` +
     categories.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
   els.category.value = categories.includes(current) ? current : "";
 }
@@ -114,12 +115,12 @@ async function init() {
     if (!res.ok) throw new Error(res.status);
     types = (await res.json()).types;
   } catch {
-    els.title.textContent = "Data unit gagal dimuat";
-    els.status.textContent = "Muat ulang halaman untuk mencoba lagi.";
+    els.title.textContent = t("unitsError");
+    els.status.textContent = t("retry");
     els.tables.innerHTML = "";
     return;
   }
-  els.type.innerHTML = types.map((t) => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
+  els.type.innerHTML = types.map((type) => `<option value="${esc(type.id)}">${esc(type.name)}</option>`).join("");
   loadState();
   render();
   els.type.addEventListener("change", () => { fillCategories(); render(); });

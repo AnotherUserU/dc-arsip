@@ -14,14 +14,14 @@ const els = {
 
 const state = { index: null, loaded: new Map(), shown: 0 };
 
-const dayLabel = new Intl.DateTimeFormat("id-ID", {
+const dayLabel = new Intl.DateTimeFormat(LOCALE, {
   weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
 });
-const railLabel = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", timeZone: "UTC" });
-const timeLabel = new Intl.DateTimeFormat("id-ID", {
+const railLabel = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", timeZone: "UTC" });
+const timeLabel = new Intl.DateTimeFormat(LOCALE, {
   hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta",
 });
-const stampLabel = new Intl.DateTimeFormat("id-ID", {
+const stampLabel = new Intl.DateTimeFormat(LOCALE, {
   dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Jakarta",
 });
 
@@ -59,7 +59,7 @@ function safeUrl(url) {
 function inline(text) {
   return esc(text)
     .replace(/&lt;t:(\d+)(?::[a-zA-Z])?&gt;/g, (_, s) => stampLabel.format(new Date(s * 1000)))
-    .replace(/&lt;(@[!&]?|#)\d+&gt;/g, (_, p) => (p === "#" ? "#channel" : "@pengguna"))
+    .replace(/&lt;(@[!&]?|#)\d+&gt;/g, (_, p) => (p === "#" ? "#channel" : `@${t("user")}`))
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|&lt;(https?:\/\/[^\s]+?)&gt;|(https?:\/\/[^\s<]+)/g,
       (_, label, href, angled, bare) => {
@@ -146,7 +146,7 @@ function renderAttachments(attachments) {
     for (const att of images) {
       const button = el("button", {
         type: "button", class: "plate", "data-src": att.url, "data-name": att.name || "",
-        "aria-label": `Perbesar gambar ${att.name || ""}`.trim(),
+        "aria-label": t("enlarge", { name: att.name || "" }).trim(),
       });
       button.append(el("img", { src: att.url, alt: att.name || "", loading: "lazy" }));
       plates.append(button);
@@ -155,7 +155,7 @@ function renderAttachments(attachments) {
   }
   for (const att of files) {
     nodes.push(el("p", { class: "file" },
-      `Lampiran: <a href="${esc(att.url)}" target="_blank" rel="noopener noreferrer">${esc(att.name)}</a>`));
+      `${t("attachment")} <a href="${esc(att.url)}" target="_blank" rel="noopener noreferrer">${esc(att.name)}</a>`));
   }
   return nodes;
 }
@@ -163,11 +163,11 @@ function renderAttachments(attachments) {
 function renderItem(item, query) {
   const node = el("article", { class: "sheet", id: `m-${item.id}` });
   node.append(el("header", { class: "sheet-head" },
-    `<a class="clock" href="#m-${esc(item.id)}" title="Tautan ke laporan ini">`
+    `<a class="clock" href="#m-${esc(item.id)}" title="${t("linkToReport")}">`
     + `${timeLabel.format(new Date(item.ts))}<small>WIB</small></a>`
     + `<span class="stamp">#${esc(item.channel)}</span>`
     + `<span class="author">${esc(item.author)}</span>`
-    + `<button class="copy" type="button" data-id="${esc(item.id)}">Salin tautan</button>`));
+    + `<button class="copy" type="button" data-id="${esc(item.id)}">${t("copyLink")}</button>`));
   if (item.content) node.append(el("div", { class: "body" }, highlight(markdown(item.content), query)));
   for (const embed of item.embeds || []) node.append(renderEmbed(embed, query));
   if (item.attachments?.length) node.append(...renderAttachments(item.attachments));
@@ -177,7 +177,7 @@ function renderItem(item, query) {
 function renderDay(date, items, query) {
   const section = el("section", { class: "day", id: `d-${date}`, "data-date": date });
   section.append(el("div", { class: "day-head" },
-    `<h2>${dayLabel.format(new Date(`${date}T00:00:00Z`))}</h2><span>${items.length} laporan</span>`));
+    `<h2>${dayLabel.format(new Date(`${date}T00:00:00Z`))}</h2><span>${t("reports", { n: items.length })}</span>`));
   // Terbaru di atas, sama seperti urutan hari.
   for (const item of [...items].reverse()) section.append(renderItem(item, query));
   return section;
@@ -236,7 +236,7 @@ async function render() {
   const { query, channel } = filters();
   const filtering = Boolean(query || channel);
   if (filtering) {
-    els.status.textContent = "Mencari di seluruh arsip…";
+    els.status.textContent = t("searching");
     await loadAllDays();
   }
   const days = filtering ? state.index.days : state.index.days.slice(0, state.shown);
@@ -249,14 +249,14 @@ async function render() {
     sections.push(renderDay(date, items, query));
   }
   if (!state.index.days.length) {
-    sections.push(renderEmpty("Meja masih kosong.", "Laporan pertama akan muncul setelah bot mengarsipkan pesan."));
+    sections.push(renderEmpty(t("emptyTitle"), t("emptyText")));
   } else if (filtering && !total) {
-    sections.push(renderEmpty("Tidak ada laporan yang cocok.", "Coba kata lain, atau pilih Semua channel."));
+    sections.push(renderEmpty(t("noMatchTitle"), t("noMatchText")));
   }
   els.feed.replaceChildren(...sections);
   els.feed.setAttribute("aria-busy", "false");
   els.more.hidden = filtering || state.shown >= state.index.days.length;
-  els.status.textContent = filtering && total ? `${total} laporan cocok.` : "";
+  els.status.textContent = filtering && total ? t("matching", { n: total }) : "";
   observeDays();
   markTarget();
 }
@@ -266,9 +266,9 @@ function renderRail() {
     const parts = Object.fromEntries(railLabel.formatToParts(new Date(`${date}T00:00:00Z`))
       .map((p) => [p.type, p.value]));
     const li = el("li");
-    li.append(el("a", { href: `#d-${date}`, "aria-label": `${date}, ${count} laporan` },
+    li.append(el("a", { href: `#d-${date}`, "aria-label": `${date}, ${t("reports", { n: count })}` },
       `<span class="d">${esc(parts.day)}</span><span class="m">${esc(parts.month)}</span>`
-      + `<span class="n">${count} laporan</span>`));
+      + `<span class="n">${t("reports", { n: count })}</span>`));
     return li;
   }));
   for (const [id, name] of Object.entries(state.index.channels || {})) {
@@ -312,14 +312,16 @@ async function init() {
   try {
     state.index = await getJSON("data/index.json");
   } catch {
-    els.meta.textContent = "Arsip belum tersedia.";
-    els.feed.replaceChildren(renderEmpty("Belum ada data.", "Jalankan workflow arsip sekali dulu."));
+    els.meta.textContent = t("noArchive");
+    els.feed.replaceChildren(renderEmpty(t("noDataTitle"), t("noDataText")));
     els.feed.setAttribute("aria-busy", "false");
     return;
   }
   const total = state.index.days.reduce((n, d) => n + d.count, 0);
-  els.meta.textContent = `${total} laporan dari ${state.index.days.length} hari · diperbarui ${
-    stampLabel.format(new Date(state.index.updated))} WIB`;
+  els.meta.textContent = t("meta", {
+    reports: t("reports", { n: total }), days: t("days", { n: state.index.days.length }),
+    time: stampLabel.format(new Date(state.index.updated)),
+  });
   state.shown = PAGE_DAYS;
   renderRail();
   await render();
@@ -338,11 +340,11 @@ async function copyLink(button) {
   const url = `${location.origin}${location.pathname}#m-${button.dataset.id}`;
   try {
     await navigator.clipboard.writeText(url);
-    button.textContent = "Tersalin";
+    button.textContent = t("copied");
   } catch {
-    button.textContent = "Gagal menyalin";
+    button.textContent = t("copyFailed");
   }
-  setTimeout(() => { button.textContent = "Salin tautan"; }, COPY_RESET_MS);
+  setTimeout(() => { button.textContent = t("copyLink"); }, COPY_RESET_MS);
 }
 
 let searchTimer;
@@ -369,7 +371,7 @@ els.lightbox.addEventListener("click", (event) => {
 window.addEventListener("hashchange", () => revealHash().catch(showError));
 
 function showError(err) {
-  els.status.textContent = "Gagal memuat sebagian arsip. Coba muat ulang halaman.";
+  els.status.textContent = t("loadError");
   console.error(err);
 }
 
