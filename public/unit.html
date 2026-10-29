@@ -20,17 +20,17 @@
     </div>
     <form class="tools tools-units" id="tools">
       <label class="field">
-        <span>Kategori</span>
-        <select id="category"></select>
+        <span>Jenis</span>
+        <select id="type"></select>
       </label>
       <label class="field">
-        <span>Faksi</span>
-        <select id="faction"><option value="">Semua faksi</option></select>
+        <span>Kategori</span>
+        <select id="category"><option value="">Semua</option></select>
       </label>
       <label class="field">
         <span>Urutkan</span>
         <select id="sort">
-          <option value="">Faksi</option>
+          <option value="">Kategori</option>
           <option value="missiles">Jangkauan rudal</option>
           <option value="drones">Jangkauan drone</option>
           <option value="altitude">Ketinggian</option>
@@ -41,23 +41,13 @@
 
   <main class="units">
     <p class="status" id="status" role="status" aria-live="polite"></p>
-    <section class="sheet units-sheet" aria-labelledby="units-title">
-      <div class="units-head">
-        <h2 id="units-title">Memuat…</h2>
-        <ul class="legend" aria-label="Keterangan warna">
-          <li><i class="key key-drones"></i>Drone</li>
-          <li><i class="key key-missiles"></i>Rudal</li>
-          <li><i class="key key-guns"></i>Meriam</li>
-          <li><i class="key key-altitude"></i>Ketinggian maks</li>
-        </ul>
-      </div>
-      <table class="unit-table">
-        <thead>
-          <tr><th scope="col">Unit</th><th scope="col">Jangkauan tembak</th><th scope="col">Ketinggian maks</th></tr>
-        </thead>
-        <tbody id="unit-rows"></tbody>
-      </table>
-    </section>
+    <div class="units-head">
+      <h2 id="units-title">Memuat…</h2>
+      <p class="units-note">Jarak dalam meter. Angka tebal = tertinggi di antara unit yang tampil.</p>
+    </div>
+    <div class="faction-grid" id="tables">
+      <div class="sheet sheet-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+    </div>
   </main>
 
   <script src="unit.js"></script>

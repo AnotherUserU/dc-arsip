@@ -321,62 +321,46 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
 .pages a { color: var(--chalk); }
 .pages a:hover { text-decoration-thickness: 2.5px; }
 
-/* --- Perbandingan unit ------------------------------------------------- */
-/* Warna jenis sasaran mengikuti tooltip game (drone biru, rudal kuning) dan sudah
-   dicek buta warna terhadap kertas. Meriam pakai hijau-laut, bukan merah, supaya tidak
-   tertukar dengan merah pensil. Nilai selalu tertulis, jadi warna bukan satu-satunya isyarat. */
-.units-sheet {
-  --drones: #2a78d6;
-  --missiles: #c98500;
-  --guns: #1baf7a;
-  --altitude: var(--ink-soft);
-}
+/* --- Perbandingan unit: satu tabel per faksi -------------------------- */
+
 .tools-units { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .units { max-width: 1180px; margin: 0 auto; padding: 48px 30px 96px; }
-.units-sheet { padding-bottom: 18px; }
-.units-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px 24px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--paper-edge);
-}
-.units-head h2 { margin: 0; font-size: 1.75rem; font-weight: 760; line-height: 1; font-stretch: 68%; text-transform: uppercase; }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; color: var(--ink-soft); font-size: 0.875rem; font-weight: 600; }
-.legend li { display: flex; align-items: center; gap: 7px; }
-.key { display: block; width: 18px; height: 10px; border-radius: 0 4px 4px 0; }
-.key-drones, .bar-drones { background: var(--drones); }
-.key-missiles, .bar-missiles { background: var(--missiles); }
-.key-guns, .bar-guns { background: var(--guns); }
-.key-altitude, .bar-altitude { background: var(--altitude); }
+.units-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; margin: 0 0 20px; }
+.units-head h2 { margin: 0; font-size: 1.375rem; font-weight: 760; font-stretch: 68%; letter-spacing: 0.02em; text-transform: uppercase; }
+.units-note { margin: 0; color: var(--chalk-dim); font-size: 0.875rem; }
 
-.unit-table { width: 100%; border-collapse: collapse; }
+.faction-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.faction-sheet { margin: 0; padding: 20px 20px 12px; }
+.faction-sheet h3 {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--ink-soft);
+  font-size: 1.5rem;
+  font-weight: 760;
+  font-stretch: 68%;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.unit-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.unit-table th, .unit-table td { padding: 10px 0 10px 10px; text-align: right; vertical-align: baseline; }
+.unit-table th:first-child { padding-left: 0; text-align: left; }
 .unit-table thead th {
-  padding: 14px 0 8px;
+  padding-top: 10px;
+  padding-bottom: 6px;
   color: var(--ink-faint);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 650;
   font-stretch: 68%;
   letter-spacing: 0.04em;
-  text-align: left;
   text-transform: uppercase;
 }
-.unit-table thead th:first-child { width: 13rem; }
-.unit-table thead th:last-child { width: 32%; }
 .unit-table tbody tr { border-top: 1px solid var(--paper-edge); }
-.unit-table tbody th, .unit-table td { padding: 14px 24px 14px 0; vertical-align: top; text-align: left; }
-.unit-table td:last-child { padding-right: 0; }
-.unit-name { display: block; margin-bottom: 6px; font-size: 1.375rem; font-weight: 760; font-stretch: 68%; line-height: 1.05; text-transform: uppercase; }
-
-.bar-row { display: grid; grid-template-columns: 3.75rem minmax(0, 1fr); align-items: center; min-height: 24px; }
-.bar-label { color: var(--ink-faint); font-size: 0.8125rem; font-weight: 600; }
-/* Ruang kanan disisakan untuk angka di ujung batang. */
-.bar-track { display: flex; align-items: center; gap: 8px; padding-right: 5.5rem; }
-.bar { display: block; flex: none; width: var(--w); height: 10px; border-radius: 0 4px 4px 0; }
-.bar-track b { flex: none; color: var(--ink); font-size: 0.9375rem; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bar-none { color: var(--ink-faint); font-size: 0.875rem; font-style: italic; }
+.unit-table tbody th { font-size: 1.0625rem; font-weight: 760; font-stretch: 68%; line-height: 1.15; text-transform: uppercase; }
+.unit-table tbody th small { display: block; margin-top: 2px; color: var(--ink-faint); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; }
+.unit-table td { color: var(--ink-soft); font-size: 0.9375rem; font-weight: 500; white-space: nowrap; }
+.unit-table td.best { color: var(--ink); font-weight: 780; }
+.unit-table td.none { color: var(--ink-faint); font-size: 0.8125rem; font-style: italic; }
 
 /* --- Gerak: satu momen, pensil melingkari laporan tertaut ---------------- */
 
@@ -391,6 +375,9 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
 
 /* --- HP --------------------------------------------------------------- */
 
+@media (max-width: 1080px) {
+  .faction-grid { grid-template-columns: minmax(0, 36rem); justify-content: center; }
+}
 @media (max-width: 820px) {
   .cartouche { grid-template-columns: minmax(0, 1fr); margin: 16px 16px 0; padding: 20px; }
   .tools { grid-template-columns: minmax(0, 1fr); }
@@ -414,16 +401,7 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
   .body { font-size: 1rem; }
   .pencil { inset: -8px -6px; width: calc(100% + 12px); height: calc(100% + 16px); }
 
-  /* Tabel unit jadi tumpukan blok: nama di atas, batang di bawahnya. */
   .units { padding: 24px 16px 64px; }
-  .unit-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .unit-table tbody, .unit-table tr, .unit-table tbody th, .unit-table td { display: block; }
-  .unit-table tbody tr { padding: 14px 0; }
-  .unit-table tbody th, .unit-table td { padding: 0; }
-  .unit-table tbody th { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-bottom: 8px; }
-  .unit-name { margin: 0; }
-  /* Ketinggian punya skala sendiri (sampai 20.000 m), jadi dipisah garis dari batang jangkauan. */
-  .unit-table td + td { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--paper-edge); }
 }
 @media (max-width: 480px) {
   .plates.many { grid-template-columns: minmax(0, 1fr); }

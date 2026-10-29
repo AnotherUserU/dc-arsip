@@ -1,21 +1,21 @@
 {
- "categories": [
+ "types": [
   {
    "id": "air-defense",
    "name": "Air defense",
    "units": [
-    {"name": "Arrow 3", "faction": "Standard", "drones": null, "missiles": 4000, "guns": null, "altitude": 12000},
-    {"name": "Patriot PAC-3", "faction": "Standard", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
-    {"name": "Patriot Battery", "faction": "Standard", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200},
-    {"name": "Iron Dome", "faction": "Standard", "drones": 850, "missiles": 700, "guns": null, "altitude": 350},
-    {"name": "S-500", "faction": "Eastern", "drones": null, "missiles": 4000, "guns": null, "altitude": 20000},
-    {"name": "S-400", "faction": "Eastern", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
-    {"name": "S-300", "faction": "Eastern", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 3500},
-    {"name": "Pantsir-S1", "faction": "Eastern", "drones": 1100, "missiles": 1100, "guns": 420, "altitude": 1000},
-    {"name": "Aquila", "faction": "French", "drones": null, "missiles": 4000, "guns": null, "altitude": 12000},
-    {"name": "SAMP/T", "faction": "French", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
-    {"name": "VL MICA", "faction": "French", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200},
-    {"name": "Mistral", "faction": "French", "drones": 850, "missiles": 700, "guns": null, "altitude": 350}
+    {"name": "Arrow 3", "faction": "Standard", "category": "Arrow 3", "drones": null, "missiles": 4000, "guns": null, "altitude": 12000},
+    {"name": "Patriot PAC-3", "faction": "Standard", "category": "PAC-3", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
+    {"name": "Patriot Battery", "faction": "Standard", "category": "Patriot Battery", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200},
+    {"name": "Iron Dome", "faction": "Standard", "category": "Iron Dome", "drones": 850, "missiles": 700, "guns": null, "altitude": 350},
+    {"name": "S-500", "faction": "Eastern", "category": "Arrow 3", "drones": null, "missiles": 4000, "guns": null, "altitude": 20000},
+    {"name": "S-400", "faction": "Eastern", "category": "PAC-3", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
+    {"name": "S-300", "faction": "Eastern", "category": "Patriot Battery", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 3500},
+    {"name": "Pantsir-S1", "faction": "Eastern", "category": "Iron Dome", "drones": 1100, "missiles": 1100, "guns": 420, "altitude": 1000},
+    {"name": "Aquila", "faction": "French", "category": "Arrow 3", "drones": null, "missiles": 4000, "guns": null, "altitude": 12000},
+    {"name": "SAMP/T", "faction": "French", "category": "PAC-3", "drones": 1200, "missiles": 1200, "guns": null, "altitude": 2200},
+    {"name": "VL MICA", "faction": "French", "category": "Patriot Battery", "drones": 1400, "missiles": 1400, "guns": null, "altitude": 1200},
+    {"name": "Mistral", "faction": "French", "category": "Iron Dome", "drones": 850, "missiles": 700, "guns": null, "altitude": 350}
    ]
   }
  ]

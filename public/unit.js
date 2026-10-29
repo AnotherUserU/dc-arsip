@@ -1,73 +1,77 @@
-// Halaman perbandingan unit. Data diisi tangan di units.json.
-// Skala batang dihitung dari seluruh kategori, bukan hasil filter, supaya panjang batang
-// tetap sama saat faksi diganti dan bisa dibandingkan antarfaksi.
+// Halaman perbandingan unit: satu tabel per faksi. Data diisi tangan di units.json.
+// Unit yang setara antarfaksi punya "category" yang sama (mis. Arrow 3, S-500, Aquila),
+// jadi filter kategori menampilkan tiga unit itu berdampingan.
 
-const RANGES = [
+const COLUMNS = [
   ["drones", "Drone"],
   ["missiles", "Rudal"],
   ["guns", "Meriam"],
+  ["altitude", "Tinggi"],
 ];
 
 const $ = (id) => document.getElementById(id);
-const els = { category: $("category"), faction: $("faction"), sort: $("sort"), rows: $("unit-rows"), title: $("units-title"), status: $("status") };
-const meters = new Intl.NumberFormat("id-ID");
-let categories = [];
+const els = { type: $("type"), category: $("category"), sort: $("sort"), tables: $("tables"), title: $("units-title"), status: $("status") };
+const numbers = new Intl.NumberFormat("id-ID");
+let types = [];
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
-const pct = (value, max) => `${Math.max(2, (value / max) * 100).toFixed(1)}%`;
+const currentType = () => types.find((t) => t.id === els.type.value) || types[0];
+const unique = (values) => [...new Set(values)];
 
-function bar(kind, label, value, max) {
-  if (value == null) {
-    return `<div class="bar-row is-none"><span class="bar-label">${label}</span><span class="bar-none">tidak bisa</span></div>`;
-  }
-  return `<div class="bar-row"><span class="bar-label">${label}</span>
-    <span class="bar-track"><i class="bar bar-${kind}" style="--w:${pct(value, max)}"></i><b>${meters.format(value)} m</b></span></div>`;
+function cell(value, best) {
+  if (value == null) return `<td class="none">tidak</td>`;
+  return `<td${value === best ? ` class="best"` : ""}>${numbers.format(value)}</td>`;
 }
 
-function renderRow(unit, rangeMax, altitudeMax) {
-  // Meriam hanya ditampilkan untuk unit yang punya; Drone dan Rudal selalu, supaya
-  // "tidak bisa menembak drone" terlihat jelas.
-  const ranges = RANGES.filter(([key]) => key !== "guns" || unit.guns != null)
-    .map(([key, label]) => bar(key, label, unit[key], rangeMax)).join("");
-  return `<tr>
-    <th scope="row"><span class="unit-name">${esc(unit.name)}</span><span class="stamp">${esc(unit.faction)}</span></th>
-    <td>${ranges}</td>
-    <td>${bar("altitude", "Tinggi", unit.altitude, altitudeMax)}</td>
-  </tr>`;
+function renderTable(faction, units, best) {
+  const rows = units.map((u) => `<tr>
+      <th scope="row">${esc(u.name)}<small>${esc(u.category)}</small></th>
+      ${COLUMNS.map(([key]) => cell(u[key], best[key])).join("")}
+    </tr>`).join("");
+  return `<section class="sheet faction-sheet" aria-label="Faksi ${esc(faction)}">
+    <h3>${esc(faction)}</h3>
+    <table class="unit-table">
+      <thead><tr><th scope="col">Unit</th>${COLUMNS.map(([, label]) => `<th scope="col">${label}</th>`).join("")}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </section>`;
 }
 
 function render() {
-  const category = categories.find((c) => c.id === els.category.value) || categories[0];
-  const faction = els.faction.value;
+  const type = currentType();
+  const category = els.category.value;
   const sortKey = els.sort.value;
-  const rangeMax = Math.max(...category.units.flatMap((u) => RANGES.map(([k]) => u[k] || 0)));
-  const altitudeMax = Math.max(...category.units.map((u) => u.altitude));
-
-  let units = category.units.filter((u) => !faction || u.faction === faction);
+  let units = type.units.filter((u) => !category || u.category === category);
   if (sortKey) units = [...units].sort((a, b) => (b[sortKey] || 0) - (a[sortKey] || 0));
 
-  els.title.textContent = `${category.name} · ${units.length} unit`;
-  els.rows.innerHTML = units.map((u) => renderRow(u, rangeMax, altitudeMax)).join("");
+  // Angka terbaik dihitung dari semua unit yang tampil, lintas tabel.
+  const best = Object.fromEntries(COLUMNS.map(([key]) => [key, Math.max(...units.map((u) => u[key] || 0))]));
+  const factions = unique(type.units.map((u) => u.faction));
+  els.title.textContent = `${type.name}${category ? ` · ${category}` : ""}`;
+  els.tables.innerHTML = factions
+    .map((f) => [f, units.filter((u) => u.faction === f)])
+    .filter(([, list]) => list.length)
+    .map(([f, list]) => renderTable(f, list, best))
+    .join("");
   saveState();
 }
 
-function fillFactions() {
-  const category = categories.find((c) => c.id === els.category.value) || categories[0];
-  const current = els.faction.value;
-  const factions = [...new Set(category.units.map((u) => u.faction))];
-  els.faction.innerHTML = `<option value="">Semua faksi</option>` +
-    factions.map((f) => `<option value="${esc(f)}">${esc(f)}</option>`).join("");
-  els.faction.value = factions.includes(current) ? current : "";
+function fillCategories() {
+  const current = els.category.value;
+  const categories = unique(currentType().units.map((u) => u.category));
+  els.category.innerHTML = `<option value="">Semua</option>` +
+    categories.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  els.category.value = categories.includes(current) ? current : "";
 }
 
 // Pilihan disimpan di URL supaya tampilan tertentu bisa dibagikan di Discord.
 function saveState() {
   const params = new URLSearchParams();
-  if (els.category.value !== categories[0].id) params.set("k", els.category.value);
-  if (els.faction.value) params.set("f", els.faction.value);
+  if (els.type.value !== types[0].id) params.set("j", els.type.value);
+  if (els.category.value) params.set("k", els.category.value);
   if (els.sort.value) params.set("u", els.sort.value);
   const query = params.toString();
   history.replaceState(null, "", query ? `?${query}` : location.pathname);
@@ -78,9 +82,9 @@ function loadState() {
   const pick = (select, value) => {
     if (value && [...select.options].some((o) => o.value === value)) select.value = value;
   };
+  pick(els.type, params.get("j"));
+  fillCategories();
   pick(els.category, params.get("k"));
-  fillFactions();
-  pick(els.faction, params.get("f"));
   pick(els.sort, params.get("u"));
 }
 
@@ -88,17 +92,18 @@ async function init() {
   try {
     const res = await fetch("units.json", { cache: "no-cache" });
     if (!res.ok) throw new Error(res.status);
-    categories = (await res.json()).categories;
+    types = (await res.json()).types;
   } catch {
     els.title.textContent = "Data unit gagal dimuat";
     els.status.textContent = "Muat ulang halaman untuk mencoba lagi.";
+    els.tables.innerHTML = "";
     return;
   }
-  els.category.innerHTML = categories.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+  els.type.innerHTML = types.map((t) => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
   loadState();
   render();
-  els.category.addEventListener("change", () => { fillFactions(); render(); });
-  els.faction.addEventListener("change", render);
+  els.type.addEventListener("change", () => { fillCategories(); render(); });
+  els.category.addEventListener("change", render);
   els.sort.addEventListener("change", render);
 }
 
