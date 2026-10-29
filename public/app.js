@@ -66,6 +66,8 @@ function inline(text) {
         const url = href || angled || bare;
         return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label || url}</a>`;
       })
+    // Spoiler ||...|| (biasanya ping role di siaran) ditampilkan redup, tidak disembunyikan.
+    .replace(/\|\|(.+?)\|\|/g, '<span class="spoiler">$1</span>')
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
 }
