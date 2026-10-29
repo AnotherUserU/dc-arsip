@@ -22,6 +22,10 @@ class UnitsTest(unittest.TestCase):
                     values = [unit[k] for k in RANGES]
                     self.assertTrue(all(v is None or v > 0 for v in values))
                     self.assertTrue(any(v is not None for v in values))
+                    # Amunisi boleh null (belum ada data), waktu selalu terisi.
+                    self.assertTrue(unit["ammo"] is None or unit["ammo"] > 0)
+                    self.assertGreater(unit["rearm"], 0)
+                    self.assertGreater(unit["cooldown"], 0)
 
 
 if __name__ == "__main__":
