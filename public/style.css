@@ -337,7 +337,7 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
 
 /* --- Tautan antarhalaman ------------------------------------------------ */
 
-.pages { margin: 14px 0 0; font-size: 0.9375rem; font-weight: 600; }
+.pages { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 14px 0 0; font-size: 0.9375rem; font-weight: 600; }
 .pages a { color: var(--chalk); }
 .pages a:hover { text-decoration-thickness: 2.5px; }
 
@@ -394,6 +394,73 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
 .unit-table td.best { color: var(--ink); font-weight: 780; }
 .unit-table td.none { color: var(--ink-faint); font-size: 0.8125rem; font-style: italic; }
 
+/* --- Peta konflik: satu lembar per perang -------------------------------- */
+
+.conflicts { max-width: 1180px; margin: 0 auto; padding: 48px 30px 96px; }
+.conflict { max-width: 62rem; margin: 0 auto 40px; padding: 26px 34px 30px; }
+.conflict-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--paper-edge); }
+.conflict-head h2 { margin: 0; font-size: 1.875rem; font-weight: 780; font-stretch: 68%; line-height: 1; text-transform: uppercase; }
+/* Hanya perang yang masih berlangsung yang diberi cap merah pensil. */
+.conflict.is-active .stamp { border-color: var(--pencil); color: var(--pencil); }
+.conflict-summary { max-width: 68ch; margin: 16px 0 22px; font-size: 1.0625rem; line-height: 1.6; }
+
+.versus { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.4fr); gap: 0 28px; align-items: start; }
+.vs {
+  align-self: center;
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 1.25rem;
+  font-weight: 760;
+  font-stretch: 68%;
+  text-transform: uppercase;
+}
+.side h3 {
+  margin: 0 0 6px;
+  padding-bottom: 6px;
+  border-bottom: 1.5px solid var(--ink-soft);
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-stretch: 68%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.side ul { margin: 0; padding: 0; list-style: none; }
+.faction { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 0; border-bottom: 1px solid var(--paper-edge); }
+.faction-name { font-weight: 650; }
+.faction small { grid-column: 1 / -1; color: var(--ink-faint); font-size: 0.8125rem; line-height: 1.4; }
+.chip {
+  align-self: start;
+  padding: 1px 7px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 2px;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-stretch: 68%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.faction.is-active .chip { background: var(--ink); border-color: var(--ink); color: var(--paper-light); }
+.faction:not(.is-active) .faction-name { color: var(--ink-faint); }
+.faction.is-disbanded .faction-name { text-decoration: line-through; text-decoration-color: var(--ink-faint); }
+
+.timeline-title {
+  margin: 28px 0 8px;
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-stretch: 68%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.timeline { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--paper-edge); }
+.timeline li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 12px; padding: 5px 0 5px 14px; }
+.timeline time { color: var(--ink-faint); font-size: 0.875rem; font-weight: 700; font-stretch: 68%; font-variant-numeric: tabular-nums; text-transform: uppercase; }
+.timeline a { color: var(--ink-faint); font-size: 0.875rem; white-space: nowrap; }
+.timeline a:hover { color: var(--ink); }
+
 /* --- Gerak: satu momen, pensil melingkari laporan tertaut ---------------- */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -434,6 +501,12 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
   .pencil { inset: -8px -6px; width: calc(100% + 12px); height: calc(100% + 16px); }
 
   .units { padding: 24px 16px 64px; }
+  .conflicts { padding: 24px 16px 64px; }
+  .conflict { padding: 20px 18px 24px; }
+  .conflict-head h2 { font-size: 1.5rem; }
+  .versus { grid-template-columns: minmax(0, 1fr); }
+  .vs { margin: 14px 0 10px; }
+  .timeline li { grid-template-columns: minmax(0, 1fr); gap: 0; }
 }
 @media (max-width: 480px) {
   .plates.many { grid-template-columns: minmax(0, 1fr); }

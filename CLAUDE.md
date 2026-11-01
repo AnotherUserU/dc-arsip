@@ -18,6 +18,9 @@ Bahasa: user berbahasa Indonesia; komentar kode, teks UI, dan pesan commit pakai
 - `public/`: HTML/CSS/JS polos, tanpa build. `app.js` merender markdown Discord dengan escape
   HTML dulu; tautan hanya http/https/`media/`. Pertahankan ini, karena isi pesan berasal dari
   pengguna (risiko XSS).
+- `public/units.json` (perbandingan unit) dan `public/conflicts.json` (peta konflik) diisi tangan,
+  bukan oleh bot. Peta konflik adalah rangkuman manual dari berita, terpisah dari arsip mentah;
+  tiap kejadian menaut ke pesan sumbernya (`./#m-<id>`).
 - `.github/workflows/arsip.yml`: cron `*/30`, menjalankan tes lalu fetch, dan commit hanya kalau
   ada perubahan. Commit harus atas nama `AnotherUserU` (bukan bot), karena Vercel Hobby
   memblokir deploy dari commit bot.

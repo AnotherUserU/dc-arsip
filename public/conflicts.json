@@ -1,0 +1,584 @@
+{
+ "period": {
+  "from": "2026-10-26",
+  "to": "2026-11-01"
+ },
+ "conflicts": [
+  {
+   "id": "hawazan",
+   "name": {
+    "id": "Perang Hawazan",
+    "en": "Hawazan War"
+   },
+   "status": "active",
+   "summary": {
+    "id": "Hawazan melawan koalisi yang kini dipimpin UDC. Hawazan minta maaf dan menawarkan gencatan senjata 48 jam, tetapi koalisi menolak berunding.",
+    "en": "Hawazan against a coalition now led by the UDC. Hawazan apologised and offered a 48-hour ceasefire, but the coalition refused to negotiate."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Pihak Hawazan",
+      "en": "Hawazan side"
+     },
+     "factions": [
+      {
+       "name": "Hawazan",
+       "status": "active"
+      },
+      {
+       "name": "Black Cat Central V2",
+       "status": "active",
+       "note": {
+        "id": "Sekutu sejak 1 Nov",
+        "en": "Ally since 1 Nov"
+       }
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Koalisi",
+      "en": "Coalition"
+     },
+     "factions": [
+      {
+       "name": "United Defense Council (UDC)",
+       "status": "active",
+       "note": {
+        "id": "Perang sejak 28 Okt",
+        "en": "At war since 28 Oct"
+       }
+      },
+      {
+       "name": "Greater Israeli Empire (GIE)",
+       "status": "active",
+       "note": {
+        "id": "Diserang sejak 16 Okt, menurut GIE",
+        "en": "Attacked since 16 Oct, per GIE"
+       }
+      },
+      {
+       "name": "The Phoenician Empire (TPE)",
+       "status": "active",
+       "note": {
+        "id": "Sempat mundur 28 Okt, diserang balik 29 Okt",
+        "en": "Withdrew 28 Oct, attacked again 29 Oct"
+       }
+      },
+      {
+       "name": "Army of Christ Our Lord",
+       "status": "active",
+       "note": {
+        "id": "Menolak ultimatum Hawazan 1 Nov",
+        "en": "Rejected Hawazan's ultimatum on 1 Nov"
+       }
+      },
+      {
+       "name": "Vollachian Empire",
+       "status": "active"
+      },
+      {
+       "name": "Global Occult Coalition (GOC)",
+       "status": "active"
+      },
+      {
+       "name": "Sovereign Defence Union (SDU)",
+       "status": "active",
+       "note": {
+        "id": "Mundur 31 Okt, tapi 1 Nov ikut menolak perundingan",
+        "en": "Withdrew 31 Oct, but joined the refusal to negotiate on 1 Nov"
+       }
+      },
+      {
+       "name": "Pearlcat Headquarters",
+       "status": "withdrew",
+       "note": {
+        "id": "Bergabung 28 Okt, mundur sebelum 29 Okt",
+        "en": "Joined 28 Oct, withdrew by 29 Oct"
+       }
+      },
+      {
+       "name": "Russian Union of Trade (RUOT)",
+       "status": "withdrew",
+       "note": {
+        "id": "Mundur dan membubarkan koalisinya 28 Okt",
+        "en": "Withdrew and dissolved its coalition on 28 Oct"
+       }
+      },
+      {
+       "name": "Greater American Empire (GAE)",
+       "status": "withdrew",
+       "note": {
+        "id": "Mundur 28 Okt, mengancam kembali 30 Okt",
+        "en": "Withdrew 28 Oct, threatened to return on 30 Oct"
+       }
+      },
+      {
+       "name": "URFR",
+       "status": "peace",
+       "note": {
+        "id": "Berdamai dengan Hawazan 1 Nov",
+        "en": "Made peace with Hawazan on 1 Nov"
+       }
+      },
+      {
+       "name": "NATO - OTAN",
+       "status": "disbanded",
+       "note": {
+        "id": "Bubar 28 Okt",
+        "en": "Disbanded 28 Oct"
+       }
+      },
+      {
+       "name": "European Union (EU)",
+       "status": "disbanded",
+       "note": {
+        "id": "Dihapus 29 Okt, masih disebut di daftar koalisi 1 Nov",
+        "en": "Deleted 29 Oct, still named in the coalition list on 1 Nov"
+       }
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "NATO menyatakan perang terhadap Hawazan.",
+      "en": "NATO declares war on Hawazan."
+     },
+     "source": "1564360216416350213"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "GAE ikut menyatakan perang, mendukung GIE dan RUOT.",
+      "en": "GAE declares war in support of GIE and RUOT."
+     },
+     "source": "1564380105805918217"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "GIE merilis dokumen: Hawazan menyatakan perang 16 Okt.",
+      "en": "GIE releases a file saying Hawazan declared war on 16 Oct."
+     },
+     "source": "1564383624826974219"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "NATO bubar di tengah perang.",
+      "en": "NATO disbands mid-war."
+     },
+     "source": "1564752551612510235"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "Hawazan menyatakan perang terhadap UDC; UDC membalas, Pearlcat HQ bergabung.",
+      "en": "Hawazan declares war on the UDC; the UDC answers and Pearlcat HQ joins."
+     },
+     "source": "1564762366283870239"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "RUOT mundur dan membubarkan koalisinya.",
+      "en": "RUOT withdraws and dissolves its coalition."
+     },
+     "source": "1564774949195870240"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "GAE mundur dari perang.",
+      "en": "GAE withdraws from the war."
+     },
+     "source": "1564867060306014244"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "Cold Front Alliance (UN) membuka pengadilan terhadap Hawazan.",
+      "en": "The Cold Front Alliance (UN) opens a court case against Hawazan."
+     },
+     "source": "1564869321035870245"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "TPE mundur dari perang.",
+      "en": "TPE withdraws from the war."
+     },
+     "source": "1564954129862750249"
+    },
+    {
+     "date": "2026-10-29",
+     "text": {
+      "id": "Hawazan menyatakan perang terhadap TPE.",
+      "en": "Hawazan declares war on TPE."
+     },
+     "source": "1565082223906910252"
+    },
+    {
+     "date": "2026-10-29",
+     "text": {
+      "id": "UDC dan koalisinya bersumpah terus berperang.",
+      "en": "The UDC and its coalition vow to keep fighting."
+     },
+     "source": "1565201006596190255"
+    },
+    {
+     "date": "2026-10-30",
+     "text": {
+      "id": "URFR menyatakan perang terhadap Hawazan.",
+      "en": "URFR declares war on Hawazan."
+     },
+     "source": "1565455080944304150"
+    },
+    {
+     "date": "2026-10-31",
+     "text": {
+      "id": "SDU menyatakan mundur.",
+      "en": "SDU announces its withdrawal."
+     },
+     "source": "1565868595714465924"
+    },
+    {
+     "date": "2026-10-31",
+     "text": {
+      "id": "Hawazan minta maaf dan menawarkan gencatan senjata 48 jam.",
+      "en": "Hawazan apologises and offers a 48-hour ceasefire."
+     },
+     "source": "1566001436687343666"
+    },
+    {
+     "date": "2026-10-31",
+     "text": {
+      "id": "Hawazan memberi ultimatum 12 jam ke Army of Christ Our Lord.",
+      "en": "Hawazan gives Army of Christ Our Lord a 12-hour ultimatum."
+     },
+     "source": "1566125345147723796"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Hawazan dan URFR berdamai.",
+      "en": "Hawazan and URFR make peace."
+     },
+     "source": "1566143100596781207"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Hawazan bersekutu dengan Black Cat Central V2.",
+      "en": "Hawazan allies with Black Cat Central V2."
+     },
+     "source": "1566161309148520583"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "SDU dan koalisi menolak perundingan damai.",
+      "en": "SDU and the coalition refuse peace talks."
+     },
+     "source": "1566164127116828845"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Army of Christ Our Lord menolak ultimatum: \"Bring it on.\"",
+      "en": "Army of Christ Our Lord rejects the ultimatum: \"Bring it on.\""
+     },
+     "source": "1566256996406267937"
+    }
+   ]
+  },
+  {
+   "id": "bcc",
+   "name": {
+    "id": "Perang Black Cat Central",
+    "en": "Black Cat Central War"
+   },
+   "status": "active",
+   "summary": {
+    "id": "Black Cat Central (BCC) menyatakan perang ke banyak faksi sekaligus; TPE menyebut 13 faksi. Sebagian besar membalas, dan sejak 1 Nov BCC V2 bersekutu dengan Hawazan.",
+    "en": "Black Cat Central (BCC) declared war on many factions at once; TPE counts 13. Most answered in kind, and since 1 Nov BCC V2 has been allied with Hawazan."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Pihak BCC",
+      "en": "BCC side"
+     },
+     "factions": [
+      {
+       "name": "Black Cat Central (V2)",
+       "status": "active"
+      },
+      {
+       "name": "Hawazan",
+       "status": "active",
+       "note": {
+        "id": "Sekutu sejak 1 Nov",
+        "en": "Ally since 1 Nov"
+       }
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Lawan BCC",
+      "en": "BCC's opponents"
+     },
+     "factions": [
+      {
+       "name": "United Defense Council (UDC)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 26 Okt, sanksi penuh 31 Okt",
+        "en": "Targeted 26 Oct, full sanctions 31 Oct"
+       }
+      },
+      {
+       "name": "Global Occult Coalition (GOC)",
+       "status": "active",
+       "note": {
+        "id": "Perang penuh sejak 27 Okt",
+        "en": "Full-scale war since 27 Oct"
+       }
+      },
+      {
+       "name": "Russian Union of Trade (RUOT)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 26 Okt",
+        "en": "Targeted 26 Oct"
+       }
+      },
+      {
+       "name": "Greater Israeli Empire (GIE)",
+       "status": "active",
+       "note": {
+        "id": "Ikut membela sekutu 26 Okt",
+        "en": "Joined to defend allies on 26 Oct"
+       }
+      },
+      {
+       "name": "World Defense Union (WDU)",
+       "status": "active",
+       "note": {
+        "id": "Putus aliansi lalu menyerang 27 Okt",
+        "en": "Ended the alliance, then attacked on 27 Oct"
+       }
+      },
+      {
+       "name": "The Phoenician Empire (TPE)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 30 Okt",
+        "en": "Targeted 30 Oct"
+       }
+      },
+      {
+       "name": "Army of Christ Our Lord",
+       "status": "active",
+       "note": {
+        "id": "Diserang 30 Okt",
+        "en": "Targeted 30 Oct"
+       }
+      },
+      {
+       "name": "Sovereign Defence Union (SDU)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 31 Okt",
+        "en": "Targeted 31 Oct"
+       }
+      },
+      {
+       "name": "USIIA",
+       "status": "active",
+       "note": {
+        "id": "Menyatakan perang 1 Nov",
+        "en": "Declared war on 1 Nov"
+       }
+      },
+      {
+       "name": "Black Aurum",
+       "status": "active",
+       "note": {
+        "id": "Menyatakan perang 1 Nov, didukung British Empire, Russian Bears dan Colgate Crest",
+        "en": "Declared war on 1 Nov, backed by the British Empire, Russian Bears and Colgate Crest"
+       }
+      },
+      {
+       "name": "European Union (EU)",
+       "status": "disbanded",
+       "note": {
+        "id": "Diserang 26 Okt, dihapus 29 Okt",
+        "en": "Targeted 26 Oct, deleted 29 Oct"
+       }
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-10-26",
+     "text": {
+      "id": "BCC menyatakan perang ke UDC, EU, RUOT dan GOC; GIE berjanji membela sekutunya.",
+      "en": "BCC declares war on the UDC, EU, RUOT and GOC; GIE pledges to defend its allies."
+     },
+     "source": "1564236153098334210"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "WDU dan BCC memutus aliansi.",
+      "en": "WDU and BCC end their alliance."
+     },
+     "source": "1564350401744990211"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "GOC menyatakan perang penuh terhadap BCC.",
+      "en": "GOC declares full-scale war on BCC."
+     },
+     "source": "1564365501239390214"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "UDC menyebut deklarasi BCC ilegal.",
+      "en": "The UDC calls BCC's declaration illegal."
+     },
+     "source": "1564380101611614216"
+    },
+    {
+     "date": "2026-10-27",
+     "text": {
+      "id": "WDU menyatakan perang terhadap BCC.",
+      "en": "WDU declares war on BCC."
+     },
+     "source": "1564403249975390225"
+    },
+    {
+     "date": "2026-10-30",
+     "text": {
+      "id": "BCC menyatakan perang ke Phoenician Empire dan Army of Christ Our Lord.",
+      "en": "BCC declares war on the Phoenician Empire and Army of Christ Our Lord."
+     },
+     "source": "1565454575903969377"
+    },
+    {
+     "date": "2026-10-31",
+     "text": {
+      "id": "BCC menyatakan perang ke SDU.",
+      "en": "BCC declares war on the SDU."
+     },
+     "source": "1565875605554331664"
+    },
+    {
+     "date": "2026-10-31",
+     "text": {
+      "id": "UDC menjatuhkan sanksi penuh ke BCC.",
+      "en": "The UDC places full sanctions on BCC."
+     },
+     "source": "1565898688575045755"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "USIIA menyatakan perang terhadap BCC.",
+      "en": "USIIA declares war on BCC."
+     },
+     "source": "1566143100596781207"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "TPE: BCC kini berperang dengan 13 faksi.",
+      "en": "TPE: BCC is now at war with 13 factions."
+     },
+     "source": "1566144318308356157"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Black Aurum menyatakan perang terhadap BCC V2.",
+      "en": "Black Aurum declares war on BCC V2."
+     },
+     "source": "1566191599971467299"
+    }
+   ]
+  },
+  {
+   "id": "dominia",
+   "name": {
+    "id": "RUOT lawan Dominia",
+    "en": "RUOT vs Dominia"
+   },
+   "status": "ended",
+   "summary": {
+    "id": "RUOT menyatakan perang ke Republic of Dominia karena kedekatannya dengan Hawazan; tujuh menit kemudian permusuhan dinyatakan tidak ada.",
+    "en": "RUOT declared war on the Republic of Dominia over its ties with Hawazan; seven minutes later hostilities were declared over."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Penyerang",
+      "en": "Aggressor"
+     },
+     "factions": [
+      {
+       "name": "Russian Union of Trade (RUOT)",
+       "status": "peace"
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Diserang",
+      "en": "Targeted"
+     },
+     "factions": [
+      {
+       "name": "Republic of Dominia",
+       "status": "peace"
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "RUOT menyatakan perang terhadap Dominia.",
+      "en": "RUOT declares war on Dominia."
+     },
+     "source": "1564723363450974232"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "Pihak RUOT: \"hostilities are none\".",
+      "en": "RUOT side: \"hostilities are none\"."
+     },
+     "source": "1564725120864350233"
+    },
+    {
+     "date": "2026-10-28",
+     "text": {
+      "id": "Pendiri RUOT meminta maaf ke Dominia.",
+      "en": "RUOT's founder apologises to Dominia."
+     },
+     "source": "1564774949195870240"
+    }
+   ]
+  }
+ ]
+}
