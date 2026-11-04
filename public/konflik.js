@@ -2,7 +2,7 @@
 // tiap kejadian menaut ke pesan sumbernya di arsip (#m-id), jadi teks asli tetap rujukannya.
 
 const STATUS_KEYS = { active: "statusActive", ended: "statusEnded" };
-const FACTION_KEYS = { active: "factionActive", withdrew: "factionWithdrew", disbanded: "factionDisbanded", peace: "factionPeace" };
+const FACTION_KEYS = { active: "factionActive", withdrew: "factionWithdrew", disbanded: "factionDisbanded", peace: "factionPeace", expelled: "factionExpelled" };
 
 const $ = (id) => document.getElementById(id);
 const els = { list: $("conflicts"), note: $("note"), status: $("status") };

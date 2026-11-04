@@ -1,7 +1,7 @@
 {
  "period": {
   "from": "2026-10-26",
-  "to": "2026-11-01"
+  "to": "2026-11-04"
  },
  "conflicts": [
   {
@@ -12,8 +12,8 @@
    },
    "status": "active",
    "summary": {
-    "id": "Hawazan melawan koalisi yang kini dipimpin UDC. Hawazan minta maaf dan menawarkan gencatan senjata 48 jam, tetapi koalisi menolak berunding.",
-    "en": "Hawazan against a coalition now led by the UDC. Hawazan apologised and offered a 48-hour ceasefire, but the coalition refused to negotiate."
+    "id": "Hawazan melawan koalisi pimpinan GIE. Perundingan damai gagal 1 Nov, Hawazan mengklaim menang 2 Nov (belum diverifikasi), dan UDC bubar 3 Nov. Koalisi kini pecah: AOCTL dikeluarkan lalu berbalik melawan GIE, dan SDU mundur setelah satu pertempuran terakhir 7 Nov.",
+    "en": "Hawazan against a GIE-led coalition. Peace talks failed on 1 Nov, Hawazan claimed victory on 2 Nov (unverified), and the UDC disbanded on 3 Nov. The coalition is now splitting: AOCTL was expelled and turned on GIE, and SDU leaves after one last battle on 7 Nov."
    },
    "sides": [
     {
@@ -24,7 +24,11 @@
      "factions": [
       {
        "name": "Hawazan",
-       "status": "active"
+       "status": "active",
+       "note": {
+        "id": "Mengklaim menang 2 Nov, belum diverifikasi",
+        "en": "Claimed victory on 2 Nov, unverified"
+       }
       },
       {
        "name": "Black Cat Central V2",
@@ -43,19 +47,11 @@
      },
      "factions": [
       {
-       "name": "United Defense Council (UDC)",
-       "status": "active",
-       "note": {
-        "id": "Perang sejak 28 Okt",
-        "en": "At war since 28 Oct"
-       }
-      },
-      {
        "name": "Greater Israeli Empire (GIE)",
        "status": "active",
        "note": {
-        "id": "Diserang sejak 16 Okt, menurut GIE",
-        "en": "Attacked since 16 Oct, per GIE"
+        "id": "Pendiri dan pemimpin koalisi; diserang sejak 16 Okt, menurut GIE",
+        "en": "Coalition founder and leader; attacked since 16 Oct, per GIE"
        }
       },
       {
@@ -64,14 +60,6 @@
        "note": {
         "id": "Sempat mundur 28 Okt, diserang balik 29 Okt",
         "en": "Withdrew 28 Oct, attacked again 29 Oct"
-       }
-      },
-      {
-       "name": "Army of Christ Our Lord",
-       "status": "active",
-       "note": {
-        "id": "Menolak ultimatum Hawazan 1 Nov",
-        "en": "Rejected Hawazan's ultimatum on 1 Nov"
        }
       },
       {
@@ -86,8 +74,24 @@
        "name": "Sovereign Defence Union (SDU)",
        "status": "active",
        "note": {
-        "id": "Mundur 31 Okt, tapi 1 Nov ikut menolak perundingan",
-        "en": "Withdrew 31 Oct, but joined the refusal to negotiate on 1 Nov"
+        "id": "Keluar dari koalisi 4 Nov; mundur total setelah pertempuran terakhir 7 Nov 19.00",
+        "en": "Left the coalition on 4 Nov; withdraws fully after a last battle on 7 Nov 19:00"
+       }
+      },
+      {
+       "name": "Army of Christ Our Lord (AOCTL)",
+       "status": "expelled",
+       "note": {
+        "id": "Dikeluarkan dari koalisi 4 Nov, lalu menyatakan perang ke GIE",
+        "en": "Expelled from the coalition on 4 Nov, then declared war on GIE"
+       }
+      },
+      {
+       "name": "United Defense Council (UDC)",
+       "status": "disbanded",
+       "note": {
+        "id": "Bubar dan rebranding 3 Nov",
+        "en": "Disbanded to rebrand on 3 Nov"
        }
       },
       {
@@ -134,8 +138,8 @@
        "name": "European Union (EU)",
        "status": "disbanded",
        "note": {
-        "id": "Dihapus 29 Okt, masih disebut di daftar koalisi 1 Nov",
-        "en": "Deleted 29 Oct, still named in the coalition list on 1 Nov"
+        "id": "Dihapus 29 Okt",
+        "en": "Deleted 29 Oct"
        }
       }
      ]
@@ -257,8 +261,8 @@
     {
      "date": "2026-10-31",
      "text": {
-      "id": "Hawazan memberi ultimatum 12 jam ke Army of Christ Our Lord.",
-      "en": "Hawazan gives Army of Christ Our Lord a 12-hour ultimatum."
+      "id": "Hawazan memberi ultimatum 12 jam ke AOCTL.",
+      "en": "Hawazan gives AOCTL a 12-hour ultimatum."
      },
      "source": "1566125345147723796"
     },
@@ -289,10 +293,58 @@
     {
      "date": "2026-11-01",
      "text": {
-      "id": "Army of Christ Our Lord menolak ultimatum: \"Bring it on.\"",
-      "en": "Army of Christ Our Lord rejects the ultimatum: \"Bring it on.\""
+      "id": "AOCTL menolak ultimatum: \"Bring it on.\"",
+      "en": "AOCTL rejects the ultimatum: \"Bring it on.\""
      },
      "source": "1566256996406267937"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Hawazan dan AOCTL saling menyalahkan atas gagalnya perundingan.",
+      "en": "Hawazan and AOCTL blame each other for the failed talks."
+     },
+     "source": "1566491957293752422"
+    },
+    {
+     "date": "2026-11-02",
+     "text": {
+      "id": "Hawazan menantang AOCTL bertempur 3v3.",
+      "en": "Hawazan challenges AOCTL to a 3v3 battle."
+     },
+     "source": "1566517703974461500"
+    },
+    {
+     "date": "2026-11-02",
+     "text": {
+      "id": "Hawazan mengklaim menang atas koalisi; belum diverifikasi.",
+      "en": "Hawazan claims victory over the coalition; unverified."
+     },
+     "source": "1566809890498814085"
+    },
+    {
+     "date": "2026-11-03",
+     "text": {
+      "id": "UDC bubar untuk rebranding.",
+      "en": "The UDC disbands to rebrand."
+     },
+     "source": "1566987845225156793"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "GIE mengeluarkan dua faksi dari koalisi, salah satunya AOCTL.",
+      "en": "GIE expels two factions from the coalition, one of them AOCTL."
+     },
+     "source": "1567249325128687777"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "SDU keluar dari koalisi; satu pertempuran terakhir 7 Nov.",
+      "en": "SDU leaves the coalition; one last battle on 7 Nov."
+     },
+     "source": "1567264356368916622"
     }
    ]
   },
@@ -304,8 +356,8 @@
    },
    "status": "active",
    "summary": {
-    "id": "Black Cat Central (BCC) menyatakan perang ke banyak faksi sekaligus; TPE menyebut 13 faksi. Sebagian besar membalas, dan sejak 1 Nov BCC V2 bersekutu dengan Hawazan.",
-    "en": "Black Cat Central (BCC) declared war on many factions at once; TPE counts 13. Most answered in kind, and since 1 Nov BCC V2 has been allied with Hawazan."
+    "id": "Black Cat Central (BCC) terus menambah musuh. Pada 4 Nov BCC menyatakan perang ke 16 faksi sekaligus, termasuk UN dan admin Slop Company, dengan alasan \"cus we liek dat\". Sejak 1 Nov BCC V2 bersekutu dengan Hawazan.",
+    "en": "Black Cat Central (BCC) keeps adding enemies. On 4 Nov it declared war on 16 factions at once, including the UN and the Slop Company admins, giving the reason \"cus we liek dat\". BCC V2 has been allied with Hawazan since 1 Nov."
    },
    "sides": [
     {
@@ -335,19 +387,67 @@
      },
      "factions": [
       {
-       "name": "United Defense Council (UDC)",
-       "status": "active",
-       "note": {
-        "id": "Diserang 26 Okt, sanksi penuh 31 Okt",
-        "en": "Targeted 26 Oct, full sanctions 31 Oct"
-       }
-      },
-      {
        "name": "Global Occult Coalition (GOC)",
        "status": "active",
        "note": {
-        "id": "Perang penuh sejak 27 Okt",
-        "en": "Full-scale war since 27 Oct"
+        "id": "Perang penuh sejak 27 Okt; BCC mengaku menyusupkan mata-mata",
+        "en": "Full-scale war since 27 Oct; BCC claims it planted a spy"
+       }
+      },
+      {
+       "name": "The Inner Circle (TIC)",
+       "status": "active",
+       "note": {
+        "id": "Perang total sejak 4 Nov",
+        "en": "Total war since 4 Nov"
+       }
+      },
+      {
+       "name": "Greater American Empire (GAE)",
+       "status": "active",
+       "note": {
+        "id": "Menyatakan perang 3 Nov",
+        "en": "Declared war on 3 Nov"
+       }
+      },
+      {
+       "name": "Black Aurum",
+       "status": "active",
+       "note": {
+        "id": "Menyatakan perang 1 Nov, didukung British Empire, Russian Bears dan Colgate Crest",
+        "en": "Declared war on 1 Nov, backed by the British Empire, Russian Bears and Colgate Crest"
+       }
+      },
+      {
+       "name": "World Defense Union (WDU)",
+       "status": "active",
+       "note": {
+        "id": "Putus aliansi lalu menyerang 27 Okt",
+        "en": "Ended the alliance, then attacked on 27 Oct"
+       }
+      },
+      {
+       "name": "The Phoenician Empire (TPE)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 30 Okt dan lagi 4 Nov",
+        "en": "Targeted 30 Oct and again 4 Nov"
+       }
+      },
+      {
+       "name": "Army of Christ Our Lord (AOCTL)",
+       "status": "active",
+       "note": {
+        "id": "Diserang 30 Okt dan lagi 4 Nov",
+        "en": "Targeted 30 Oct and again 4 Nov"
+       }
+      },
+      {
+       "name": "USIIA",
+       "status": "active",
+       "note": {
+        "id": "Mundur 1 Nov karena salah sasaran, diserang lagi 4 Nov",
+        "en": "Withdrew 1 Nov as a mix-up, targeted again 4 Nov"
        }
       },
       {
@@ -367,51 +467,67 @@
        }
       },
       {
-       "name": "World Defense Union (WDU)",
+       "name": "United Pearl Cats",
        "status": "active",
        "note": {
-        "id": "Putus aliansi lalu menyerang 27 Okt",
-        "en": "Ended the alliance, then attacked on 27 Oct"
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
        }
       },
       {
-       "name": "The Phoenician Empire (TPE)",
+       "name": "Russian Bears",
        "status": "active",
        "note": {
-        "id": "Diserang 30 Okt",
-        "en": "Targeted 30 Oct"
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
        }
       },
       {
-       "name": "Army of Christ Our Lord",
+       "name": "The British Empire",
        "status": "active",
        "note": {
-        "id": "Diserang 30 Okt",
-        "en": "Targeted 30 Oct"
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
+       }
+      },
+      {
+       "name": "Tux Cats",
+       "status": "active",
+       "note": {
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
+       }
+      },
+      {
+       "name": "UN",
+       "status": "active",
+       "note": {
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
+       }
+      },
+      {
+       "name": "Admin Slop Company",
+       "status": "active",
+       "note": {
+        "id": "Diserang 4 Nov",
+        "en": "Targeted 4 Nov"
        }
       },
       {
        "name": "Sovereign Defence Union (SDU)",
-       "status": "active",
+       "status": "withdrew",
        "note": {
-        "id": "Diserang 31 Okt",
-        "en": "Targeted 31 Oct"
+        "id": "Diserang 31 Okt, mundur 4 Nov",
+        "en": "Targeted 31 Oct, withdrew 4 Nov"
        }
       },
       {
-       "name": "USIIA",
-       "status": "active",
+       "name": "United Defense Council (UDC)",
+       "status": "disbanded",
        "note": {
-        "id": "Menyatakan perang 1 Nov",
-        "en": "Declared war on 1 Nov"
-       }
-      },
-      {
-       "name": "Black Aurum",
-       "status": "active",
-       "note": {
-        "id": "Menyatakan perang 1 Nov, didukung British Empire, Russian Bears dan Colgate Crest",
-        "en": "Declared war on 1 Nov, backed by the British Empire, Russian Bears and Colgate Crest"
+        "id": "Sanksi penuh 31 Okt, bubar 3 Nov",
+        "en": "Full sanctions 31 Oct, disbanded 3 Nov"
        }
       },
       {
@@ -469,8 +585,8 @@
     {
      "date": "2026-10-30",
      "text": {
-      "id": "BCC menyatakan perang ke Phoenician Empire dan Army of Christ Our Lord.",
-      "en": "BCC declares war on the Phoenician Empire and Army of Christ Our Lord."
+      "id": "BCC menyatakan perang ke Phoenician Empire dan AOCTL.",
+      "en": "BCC declares war on the Phoenician Empire and AOCTL."
      },
      "source": "1565454575903969377"
     },
@@ -501,18 +617,122 @@
     {
      "date": "2026-11-01",
      "text": {
-      "id": "TPE: BCC kini berperang dengan 13 faksi.",
-      "en": "TPE: BCC is now at war with 13 factions."
-     },
-     "source": "1566144318308356157"
-    },
-    {
-     "date": "2026-11-01",
-     "text": {
       "id": "Black Aurum menyatakan perang terhadap BCC V2.",
       "en": "Black Aurum declares war on BCC V2."
      },
      "source": "1566191599971467299"
+    },
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "USIIA mundur: BCC salah mengira mereka musuh.",
+      "en": "USIIA withdraws: BCC had mistaken it for an enemy."
+     },
+     "source": "1566448236762235012"
+    },
+    {
+     "date": "2026-11-02",
+     "text": {
+      "id": "BCC mengaku menyusupkan mata-mata ke GOC selama seminggu.",
+      "en": "BCC claims it had a spy inside GOC for a week."
+     },
+     "source": "1566590642920890409"
+    },
+    {
+     "date": "2026-11-02",
+     "text": {
+      "id": "TIC memperingatkan BCC dan Hawazan agar berhenti menyerang anggotanya.",
+      "en": "TIC warns BCC and Hawazan to stop targeting its members."
+     },
+     "source": "1566749980960489544"
+    },
+    {
+     "date": "2026-11-03",
+     "text": {
+      "id": "GAE menyatakan perang terhadap BCC.",
+      "en": "GAE declares war on BCC."
+     },
+     "source": "1567185770073161912"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "SDU mundur dari perang melawan BCC.",
+      "en": "SDU withdraws from the war against BCC."
+     },
+     "source": "1567264356368916622"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "TIC menyatakan perang total terhadap BCC.",
+      "en": "TIC declares total war on BCC."
+     },
+     "source": "1567310945255030952"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "BCC menyatakan perang ke 16 faksi sekaligus.",
+      "en": "BCC declares war on 16 factions at once."
+     },
+     "source": "1567325652707971224"
+    }
+   ]
+  },
+  {
+   "id": "aoctl-gie",
+   "name": {
+    "id": "AOCTL lawan GIE",
+    "en": "AOCTL vs GIE"
+   },
+   "status": "active",
+   "summary": {
+    "id": "Setelah dikeluarkan dari koalisi, Army of Christ Our Lord menyatakan perang ke GIE dan mengajak TIC serta Hawazan bersekutu. Menurut GIE, Hawazan sudah menolak ajakan AOCTL.",
+    "en": "After being expelled from the coalition, Army of Christ Our Lord declared war on GIE and invited TIC and Hawazan to ally with it. According to GIE, Hawazan already turned AOCTL down."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Penyerang",
+      "en": "Aggressor"
+     },
+     "factions": [
+      {
+       "name": "Army of Christ Our Lord (AOCTL)",
+       "status": "active"
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Diserang",
+      "en": "Targeted"
+     },
+     "factions": [
+      {
+       "name": "Greater Israeli Empire (GIE)",
+       "status": "active"
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "GIE mengeluarkan AOCTL dari koalisi.",
+      "en": "GIE expels AOCTL from the coalition."
+     },
+     "source": "1567249325128687777"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "AOCTL menyatakan perang terhadap GIE.",
+      "en": "AOCTL declares war on GIE."
+     },
+     "source": "1567296681610055691"
     }
    ]
   },
