@@ -5,9 +5,10 @@ const STATUS_KEYS = { active: "statusActive", ended: "statusEnded" };
 const FACTION_KEYS = { active: "factionActive", withdrew: "factionWithdrew", disbanded: "factionDisbanded", peace: "factionPeace", expelled: "factionExpelled" };
 
 const $ = (id) => document.getElementById(id);
-const els = { list: $("conflicts"), note: $("note"), status: $("status") };
+const els = { list: $("conflicts"), note: $("note"), updated: $("updated"), status: $("status") };
 const dayLabel = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", timeZone: "UTC" });
 const fullDay = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const stamp = new Intl.DateTimeFormat(LOCALE, { dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta" });
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -40,12 +41,20 @@ function renderEvent(event) {
   </li>`;
 }
 
+// Rentang perang diambil dari kejadian pertama dan terakhir di kronologinya.
+function renderRange(events) {
+  const dates = events.map((e) => e.date).sort();
+  const [from, to] = [dates[0], dates[dates.length - 1]];
+  return from === to ? t("conflictOneDay", { date: date(from) }) : t("conflictRange", { from: date(from), to: date(to) });
+}
+
 function renderConflict(conflict) {
   const [first, second] = conflict.sides;
   return `<article class="sheet conflict is-${esc(conflict.status)}" id="${esc(conflict.id)}">
     <header class="conflict-head">
       <h2>${esc(pick(conflict.name))}</h2>
       <span class="stamp">${t(STATUS_KEYS[conflict.status])}</span>
+      <span class="conflict-range">${renderRange(conflict.events)}</span>
     </header>
     <p class="conflict-summary">${esc(pick(conflict.summary))}</p>
     <div class="versus">
@@ -69,6 +78,7 @@ async function init() {
     els.status.textContent = `${t("conflictsError")}. ${t("retry")}`;
     return;
   }
+  if (data.updated) els.updated.textContent = t("conflictsUpdated", { time: stamp.format(new Date(data.updated)) });
   els.note.textContent = t("conflictsNote", { from: date(data.period.from, fullDay), to: date(data.period.to, fullDay) });
   els.list.innerHTML = data.conflicts.map(renderConflict).join("");
 }
