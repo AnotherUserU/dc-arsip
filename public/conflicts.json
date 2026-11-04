@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04T23:18+07:00",
+ "updated": "2026-11-04T23:29+07:00",
  "period": {
   "from": "2026-10-26",
   "to": "2026-11-04"
@@ -439,8 +439,8 @@
        "name": "Army of Christ Our Lord (AOCTL)",
        "status": "active",
        "note": {
-        "id": "Diserang 30 Okt dan lagi 4 Nov",
-        "en": "Targeted 30 Oct and again 4 Nov"
+        "id": "Diserang 30 Okt, masuk daftar 16 faksi 4 Nov, lalu dinyatakan perang lagi malamnya",
+        "en": "Targeted 30 Oct, on the 16-faction list on 4 Nov, then declared on again that night"
        }
       },
       {
@@ -678,6 +678,30 @@
       "en": "BCC declares war on 16 factions at once."
      },
      "source": "1567325652707971224"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "CANZUK menolak ikut melawan BCC dan menyerukan damai.",
+      "en": "CANZUK refuses to fight BCC and calls for peace."
+     },
+     "source": "1567330286964830209"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "CANZUK memutus aliansi dengan GIE.",
+      "en": "CANZUK ends its alliance with GIE."
+     },
+     "source": "1567409055993950210"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "Salah satu co-owner BCC menyatakan perang ke AOCTL.",
+      "en": "A BCC co-owner declares war on AOCTL."
+     },
+     "source": "1567575150432350213"
     }
    ]
   },
@@ -734,6 +758,90 @@
       "en": "AOCTL declares war on GIE."
      },
      "source": "1567296681610055691"
+    }
+   ]
+  },
+  {
+   "id": "goc",
+   "name": {
+    "id": "Perang melawan GOC",
+    "en": "War on GOC"
+   },
+   "status": "active",
+   "summary": {
+    "id": "GOC, yang sedang ditinggal banyak anggotanya, kini dikeroyok dari beberapa arah. TPE menyatakan perang 4 Nov karena GOC menyerang anggota netral, padahal keduanya sama-sama di koalisi melawan Hawazan. Menurut BCBN, GOC juga berperang dengan 5V Allied Powers dan GAE.",
+    "en": "GOC, already losing many members, is now under pressure from several sides. TPE declared war on 4 Nov after GOC attacked a neutral member, even though both are in the coalition against Hawazan. Per BCBN, GOC is also at war with the 5V Allied Powers and GAE."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Diserang",
+      "en": "Targeted"
+     },
+     "factions": [
+      {
+       "name": "Global Occult Coalition (GOC)",
+       "status": "active",
+       "note": {
+        "id": "Lebih dari 34 anggota keluar minggu ini",
+        "en": "More than 34 members left this week"
+       }
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Lawan GOC",
+      "en": "GOC's opponents"
+     },
+     "factions": [
+      {
+       "name": "The Phoenician Empire (TPE)",
+       "status": "active",
+       "note": {
+        "id": "Menyatakan perang 4 Nov",
+        "en": "Declared war on 4 Nov"
+       }
+      },
+      {
+       "name": "5V Allied Powers",
+       "status": "active",
+       "note": {
+        "id": "Menang besar atas GOC, menurut laporan 5V",
+        "en": "Won a major battle against GOC, per 5V's reports"
+       }
+      },
+      {
+       "name": "Greater American Empire (GAE)",
+       "status": "active"
+      },
+      {
+       "name": "Black Cat Central (V2)",
+       "status": "active",
+       "note": {
+        "id": "Lihat perang Black Cat Central",
+        "en": "See the Black Cat Central war"
+       }
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-11-01",
+     "text": {
+      "id": "Lebih dari 34 anggota GOC keluar dalam seminggu.",
+      "en": "More than 34 members leave GOC in a week."
+     },
+     "source": "1566439210385276990"
+    },
+    {
+     "date": "2026-11-04",
+     "text": {
+      "id": "TPE menyatakan perang terhadap GOC.",
+      "en": "TPE declares war on GOC."
+     },
+     "source": "1567456367743070211"
     }
    ]
   },
