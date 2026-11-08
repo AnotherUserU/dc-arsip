@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-04T23:29+07:00",
+ "updated": "2026-11-08T19:42+07:00",
  "period": {
   "from": "2026-10-26",
-  "to": "2026-11-04"
+  "to": "2026-11-08"
  },
  "conflicts": [
   {
@@ -13,8 +13,8 @@
    },
    "status": "active",
    "summary": {
-    "id": "Hawazan melawan koalisi pimpinan GIE. Perundingan damai gagal 1 Nov, Hawazan mengklaim menang 2 Nov (belum diverifikasi), dan UDC bubar 3 Nov. Koalisi kini pecah: AOCTL dikeluarkan lalu berbalik melawan GIE, dan SDU mundur setelah satu pertempuran terakhir 7 Nov.",
-    "en": "Hawazan against a GIE-led coalition. Peace talks failed on 1 Nov, Hawazan claimed victory on 2 Nov (unverified), and the UDC disbanded on 3 Nov. The coalition is now splitting: AOCTL was expelled and turned on GIE, and SDU leaves after one last battle on 7 Nov."
+    "id": "Hawazan melawan koalisi pimpinan GIE. Perundingan damai gagal 1 Nov, Hawazan mengklaim menang 2 Nov (belum diverifikasi), dan UDC bubar 3 Nov. Koalisi kini pecah: AOCTL dikeluarkan lalu berbalik melawan GIE, dan SDU mundur setelah satu pertempuran terakhir 7 Nov. Sekutu Hawazan, BCC, tutup 6 Nov.",
+    "en": "Hawazan against a GIE-led coalition. Peace talks failed on 1 Nov, Hawazan claimed victory on 2 Nov (unverified), and the UDC disbanded on 3 Nov. The coalition is now splitting: AOCTL was expelled and turned on GIE, and SDU leaves after one last battle on 7 Nov. Hawazan's ally BCC shut down on 6 Nov."
    },
    "sides": [
     {
@@ -33,10 +33,10 @@
       },
       {
        "name": "Black Cat Central V2",
-       "status": "active",
+       "status": "disbanded",
        "note": {
-        "id": "Sekutu sejak 1 Nov",
-        "en": "Ally since 1 Nov"
+        "id": "Sekutu sejak 1 Nov; tutup 6 Nov setelah ownernya keluar",
+        "en": "Ally since 1 Nov; shut down on 6 Nov after its owner quit"
        }
       }
      ]
@@ -346,6 +346,30 @@
       "en": "SDU leaves the coalition; one last battle on 7 Nov."
      },
      "source": "1567264356368916622"
+    },
+    {
+     "date": "2026-11-05",
+     "text": {
+      "id": "Pidato Hitler diputar di rapat UN; TIC menuduh anggota Hawazan neo-Nazi dan melakukan pelecehan.",
+      "en": "A Hitler speech is played at the UN meeting; TIC accuses Hawazan members of neo-Nazism and harassment."
+     },
+     "source": "1567634187287011535"
+    },
+    {
+     "date": "2026-11-06",
+     "text": {
+      "id": "Pendiri GIE menuduh Menlu Hawazan menyebar klaim tanpa bukti; Hawazan disebut menolak bersekutu dengan AOCTL.",
+      "en": "GIE's founder accuses Hawazan's foreign minister of unproven claims; Hawazan reportedly refused an alliance with AOCTL."
+     },
+     "source": "1568018482430345277"
+    },
+    {
+     "date": "2026-11-06",
+     "text": {
+      "id": "BCC, sekutu Hawazan, tutup setelah ownernya keluar.",
+      "en": "BCC, Hawazan's ally, shuts down after its owner quits."
+     },
+     "source": "1568018486855475403"
     }
    ]
   },
@@ -355,10 +379,10 @@
     "id": "Perang Black Cat Central",
     "en": "Black Cat Central War"
    },
-   "status": "active",
+   "status": "ended",
    "summary": {
-    "id": "Black Cat Central (BCC) terus menambah musuh. Pada 4 Nov BCC menyatakan perang ke 16 faksi sekaligus, termasuk UN dan admin Slop Company, dengan alasan \"cus we liek dat\". Sejak 1 Nov BCC V2 bersekutu dengan Hawazan.",
-    "en": "Black Cat Central (BCC) keeps adding enemies. On 4 Nov it declared war on 16 factions at once, including the UN and the Slop Company admins, giving the reason \"cus we liek dat\". BCC V2 has been allied with Hawazan since 1 Nov."
+    "id": "Black Cat Central (BCC) sempat berperang dengan belasan faksi, puncaknya 16 faksi sekaligus pada 4 Nov. Pada 6 Nov ownernya keluar dan BCC praktis tutup; anggotanya diminta pindah ke 5V Allied Powers.",
+    "en": "Black Cat Central (BCC) fought a dozen-plus factions, peaking at 16 at once on 4 Nov. On 6 Nov its owner quit and BCC effectively shut down; members were told to move to the 5V Allied Powers."
    },
    "sides": [
     {
@@ -369,7 +393,11 @@
      "factions": [
       {
        "name": "Black Cat Central (V2)",
-       "status": "active"
+       "status": "disbanded",
+       "note": {
+        "id": "Tutup 6 Nov setelah ownernya keluar",
+        "en": "Shut down on 6 Nov after its owner quit"
+       }
       },
       {
        "name": "Hawazan",
@@ -501,10 +529,10 @@
       },
       {
        "name": "UN",
-       "status": "active",
+       "status": "disbanded",
        "note": {
-        "id": "Diserang 4 Nov",
-        "en": "Targeted 4 Nov"
+        "id": "Diserang 4 Nov, dibubarkan 6 Nov",
+        "en": "Targeted 4 Nov, disbanded 6 Nov"
        }
       },
       {
@@ -702,6 +730,22 @@
       "en": "A BCC co-owner declares war on AOCTL."
      },
      "source": "1567575150432350213"
+    },
+    {
+     "date": "2026-11-06",
+     "text": {
+      "id": "Owner BCC keluar; BCC praktis tutup dan anggotanya diarahkan ke 5V.",
+      "en": "BCC's owner quits; BCC effectively shuts down and members are pointed to 5V."
+     },
+     "source": "1568018486855475403"
+    },
+    {
+     "date": "2026-11-06",
+     "text": {
+      "id": "UN akan dibubarkan karena tidak melapor insiden rapat ke Slop Company.",
+      "en": "The UN will be disbanded for not reporting the meeting incident to Slop Company."
+     },
+     "source": "1568024618659348534"
     }
    ]
   },
@@ -817,10 +861,10 @@
       },
       {
        "name": "Black Cat Central (V2)",
-       "status": "active",
+       "status": "disbanded",
        "note": {
-        "id": "Lihat perang Black Cat Central",
-        "en": "See the Black Cat Central war"
+        "id": "Tutup 6 Nov",
+        "en": "Shut down on 6 Nov"
        }
       }
      ]
@@ -842,6 +886,94 @@
       "en": "TPE declares war on GOC."
      },
      "source": "1567456367743070211"
+    },
+    {
+     "date": "2026-11-06",
+     "text": {
+      "id": "GOC membentuk aliansi TSU bersama RUOTSA, The Three Musketeers, Cold Front Alliance dan CANZUK.",
+      "en": "GOC forms the TSU alliance with RUOTSA, The Three Musketeers, the Cold Front Alliance and CANZUK."
+     },
+     "source": "1568030262393315424"
+    }
+   ]
+  },
+  {
+   "id": "tic-tpe",
+   "name": {
+    "id": "TIC lawan TPE",
+    "en": "TIC vs TPE"
+   },
+   "status": "active",
+   "summary": {
+    "id": "TIC menyatakan perang total ke The Phoenician Empire, menuduh TPE menyergap dan melecehkan anggotanya. TPE membantah dan menyebut TIC munafik karena sebelumnya mengaku netral di UN.",
+    "en": "TIC declared total war on The Phoenician Empire, accusing TPE of ambushing and harassing its members. TPE denies it and calls TIC hypocritical for claiming neutrality at the UN."
+   },
+   "sides": [
+    {
+     "label": {
+      "id": "Penyerang",
+      "en": "Aggressor"
+     },
+     "factions": [
+      {
+       "name": "The Inner Circle (TIC)",
+       "status": "active",
+       "note": {
+        "id": "Juga memutus aliansi dengan Arma Pact 8 Nov",
+        "en": "Also ended its alliance with Arma Pact on 8 Nov"
+       }
+      }
+     ]
+    },
+    {
+     "label": {
+      "id": "Diserang",
+      "en": "Targeted"
+     },
+     "factions": [
+      {
+       "name": "The Phoenician Empire (TPE)",
+       "status": "active",
+       "note": {
+        "id": "Membantah tuduhan TIC",
+        "en": "Denies TIC's accusations"
+       }
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "date": "2026-11-05",
+     "text": {
+      "id": "TIC mengancam perang ke siapa pun di komunitas setelah rapat UN.",
+      "en": "TIC threatens war on anyone in the community after the UN meeting."
+     },
+     "source": "1567634187287011535"
+    },
+    {
+     "date": "2026-11-08",
+     "text": {
+      "id": "TIC menyatakan perang total ke TPE.",
+      "en": "TIC declares total war on TPE."
+     },
+     "source": "1568694040814161961"
+    },
+    {
+     "date": "2026-11-08",
+     "text": {
+      "id": "TIC memutus aliansi dengan Arma Pact.",
+      "en": "TIC ends its alliance with Arma Pact."
+     },
+     "source": "1568703308145754298"
+    },
+    {
+     "date": "2026-11-08",
+     "text": {
+      "id": "TPE membantah dan menyebut TIC munafik.",
+      "en": "TPE denies the claims and calls TIC hypocritical."
+     },
+     "source": "1568704347171197075"
     }
    ]
   },
