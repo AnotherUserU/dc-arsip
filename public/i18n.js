@@ -73,6 +73,7 @@ const STRINGS = {
     retry: "Muat ulang halaman untuk mencoba lagi.",
 
     conflictsLink: "Peta konflik",
+    cityLink: "Perencana kota",
     conflictsTitle: "Build And Conqueror · Peta Konflik",
     conflictsDescription: "Siapa lawan siapa di perang Build And Conqueror, disusun dari berita BCBN.",
     conflictsNote: "Disusun tangan dari berita BCBN {from} sampai {to}. Sebagian besar klaim belum diverifikasi; buka sumbernya untuk teks asli.",
@@ -162,6 +163,7 @@ const STRINGS = {
     retry: "Reload the page to try again.",
 
     conflictsLink: "Conflict map",
+    cityLink: "City planner",
     conflictsTitle: "Build And Conqueror · Conflict Map",
     conflictsDescription: "Who is fighting whom in the Build And Conqueror wars, compiled from BCBN reports.",
     conflictsNote: "Compiled by hand from BCBN reports, {from} to {to}. Most claims are unverified; open the source for the original text.",

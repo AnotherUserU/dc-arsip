@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perencana Kota 600×600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+/* Meja cetak biru: panel kontrol di kiri, peta lahan dan hitungan di kanan, satu tampilan gelap. */
+:root {
+  --bg: #11171a;
+  --panel: #182024;
+  --line: #2b373d;
+  --text: #dfe7ea;
+  --dim: #8fa0a7;
+  --accent: #e8d44d;
+  --good: #5fc48a;
+  --bad: #e5624d;
+  /* warna peta */
+  --land: #1d2b23;
+  --road: #4a5459;
+  --c-office: #5b8def;
+  --c-home: #e0a458;
+  --c-coal: #c4503a;
+  --c-mine: #8d6e52;
+  --c-steel: #a77bd6;
+  --c-refinery: #d9729b;
+  --c-desal: #2fb59f;
+  --c-wind: #eef2f3;
+  --c-solar: #e8d44d;
+  --font: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 15px/1.5 var(--font);
+  padding: 24px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+}
+header { max-width: 1280px; margin: 0 auto 20px; }
+h1 { font-size: 1.9rem; font-stretch: 85%; font-weight: 800; margin: 0; letter-spacing: -0.01em; }
+header p { margin: 4px 0 0; color: var(--dim); max-width: 70ch; }
+.pages { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-bottom: 10px; font-size: 0.85rem; }
+.pages a { color: var(--dim); text-decoration: none; border-bottom: 1px solid var(--line); }
+.pages a:hover { color: var(--accent); border-color: var(--accent); }
+.layout {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 24px; align-items: start;
+}
+@media (max-width: 820px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+form { display: grid; gap: 14px; }
+fieldset { margin: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 12px 14px 14px; display: grid; gap: 10px; min-width: 0; }
+legend { padding: 0 6px; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+label { display: grid; gap: 4px; font-size: 0.9rem; }
+label.row { grid-template-columns: auto 1fr; align-items: center; gap: 8px; }
+.hint { font-size: 0.78rem; color: var(--dim); }
+input[type=number], select {
+  width: 100%; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px;
+  font-variant-numeric: tabular-nums;
+}
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=range]:disabled { opacity: 0.5; }
+input[type=radio], input[type=checkbox] { accent-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.result { display: grid; gap: 16px; min-width: 0; }
+.mapwrap { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 10px; }
+.mapbox { position: relative; max-width: 760px; margin: 0 auto; }
+canvas { display: block; width: 100%; height: auto; aspect-ratio: 1; cursor: grab; touch-action: none; }
+canvas:active { cursor: grabbing; }
+.zoom { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+.btn {
+  font: 700 0.9rem var(--font); color: var(--text); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 4px; min-width: 32px; height: 32px; padding: 0 10px; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.maphint { text-align: center; margin: 8px 0 0; }
+.hoverinfo { font-size: 0.9rem; font-variant-numeric: tabular-nums; color: var(--accent); min-height: 1.5em; }
+.legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.85rem; justify-content: center; }
+.legend li { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.sw { width: 12px; height: 12px; border-radius: 2px; flex: none; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.card { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 12px 14px; min-width: 0; }
+.card h2 { margin: 0 0 8px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.cardhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.cardhead h2 { margin: 0; }
+.zoomless { display: flex; flex-wrap: wrap; gap: 6px; }
+.kv { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+.kv .tot { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 2px; font-weight: 700; }
+.big { font-size: 1.6rem; font-weight: 800; font-stretch: 90%; font-variant-numeric: tabular-nums; }
+.good { color: var(--good); } .bad { color: var(--bad); }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+th, td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { color: var(--dim); font-weight: 600; font-size: 0.8rem; }
+tr.sel td:first-child { color: var(--accent); }
+td .btn { height: 26px; font-size: 0.8rem; }
+.notes { margin: 0; padding-left: 18px; color: var(--dim); font-size: 0.85rem; display: grid; gap: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <nav class="pages" aria-label="Halaman"><a href="./">Arsip siaran</a><a href="unit.html">Perbandingan unit</a><a href="konflik.html">Peta konflik</a></nav>
+  <h1>Perencana Kota</h1>
+  <p>Rencana utama: Low Income Apartment untuk penduduk dan Grand Skyscraper (sudah di-upgrade) untuk uang, dengan jalur solar di sela blok. Semua pilihan bisa diubah. Data gedung dari tabel BC Building Stats.</p>
+</header>
+
+<main class="layout">
+  <form id="cfg" autocomplete="off">
+    <fieldset>
+      <legend>Lahan &amp; jalan</legend>
+      <label>Ukuran lahan (studs)
+        <input id="map" type="number" value="600" min="100" max="2000" step="2">
+      </label>
+      <div class="pair">
+        <label>Lebar jalan
+          <input id="road" type="number" value="2" min="2" max="40" step="2">
+        </label>
+        <label>Jarak maks ke jalan
+          <input id="dist" type="number" value="4" min="0" max="40">
+        </label>
+      </div>
+      <span class="hint">Ubin jalan 2×2. Gedung harus dalam 4 studs dari jalan, diukur dari tepi gedung.</span>
+    </fieldset>
+
+    <fieldset>
+      <legend>Gedung</legend>
+      <label>Hunian <select id="house"></select></label>
+      <label>Tempat kerja <select id="office"></select></label>
+      <label class="row"><input id="upgrade" type="checkbox" checked> Grand Skyscraper sudah di-upgrade (income $4.240)</label>
+      <label class="row"><input id="residentIncome" type="checkbox" checked> Seperti di game: penduduk +20% (pertumbuhan alami) dan tiap penduduk bayar $2</label>
+      <label class="row"><input id="needWorkers" type="checkbox" checked> Pekerja wajib terisi penduduk</label>
+      <label class="row"><input id="autoPct" type="checkbox" checked> Atur porsi lahan otomatis</label>
+      <label>Porsi lahan untuk tempat kerja: <output id="pctOut">30%</output>
+        <input id="pct" type="range" min="0" max="100" value="30">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Industri</legend>
+      <div class="pair">
+        <label>Steelworks <input id="steelN" type="number" min="0" max="20" value="6"></label>
+        <label>Mine (maks 12) <input id="mines" type="number" min="0" max="12" value="12"></label>
+      </div>
+      <label class="row"><input id="mineUp" type="checkbox" checked> Mine sudah di-upgrade (600 batubara per menit)</label>
+      <label>Large Refinery (minimal 4 supaya Mine 600 per menit)
+        <input id="refineries" type="number" min="0" max="20" value="4">
+        <span class="hint">Ukuran dan angkanya belum ada di tabel; sementara memakai Medium Refinery (12×16, 220 energi, 60 pekerja, upkeep $240).</span>
+      </label>
+      <span class="hint">Steelworks hanya perlu kalau gedungnya butuh steel. Tiap Steelworks makan 100 batubara per menit.</span>
+    </fieldset>
+
+    <fieldset>
+      <legend>Listrik</legend>
+      <div class="pair">
+        <label>Coal Power Plant <input id="coal" type="number" min="0" max="200" placeholder="otomatis"></label>
+        <label>Wind (maks 20) <input id="wind" type="number" min="0" max="20" value="6"></label>
+      </div>
+      <span class="hint">Kosongkan coal supaya diisi sebanyak yang bisa dibakar dari batubara Mine (60 per menit per plant).</span>
+      <label class="row"><input id="solar" type="checkbox"> Tambah jalur solar di sela blok</label>
+      <span class="hint">Solar menyala terus tapi hanya menjangkau 50 studs. Solar di celah zona industri selalu dipakai. Tanpa jalur solar, jumlah gedung dikurangi sampai listrik cukup.</span>
+      <label>Desalinasi: tambahan energi per 1.000 penduduk
+        <input id="desalPop" type="number" min="0" value="1">
+      </label>
+    </fieldset>
+  </form>
+
+  <section class="result">
+    <div class="mapwrap">
+      <div class="mapbox">
+        <canvas id="peta" width="1200" height="1200" aria-label="Peta tata letak lahan"></canvas>
+        <div class="zoom" role="group" aria-label="Zoom peta">
+          <button type="button" class="btn" id="zoomIn" aria-label="Perbesar peta">+</button>
+          <button type="button" class="btn" id="zoomOut" aria-label="Perkecil peta">−</button>
+          <button type="button" class="btn" id="zoomReset">Reset</button>
+        </div>
+      </div>
+      <p class="hint maphint">Scroll atau cubit dua jari untuk zoom, seret untuk menggeser, klik dua kali untuk memperbesar. Nomor baris.kolom muncul saat diperbesar.</p>
+      <p class="maphint hoverinfo" id="hoverInfo" aria-live="polite">Arahkan kursor ke gedung untuk melihat nomor dan posisinya.</p>
+      <ul class="legend" id="legend"></ul>
+      <p class="maphint"><button type="button" class="btn" id="exportGame">Export ke game (kota_layout.txt)</button></p>
+      <p class="hint maphint">Simpan file ke <code>D:\Matcha External\logs</code>, lalu jalankan <code>bc_blueprint.lua</code> di Matcha.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h2>Penduduk &amp; uang</h2>
+        <div class="big" id="income"></div>
+        <div class="kv" id="city"></div>
+      </div>
+      <div class="card">
+        <h2>Neraca energi</h2>
+        <div class="big" id="balance"></div>
+        <div class="kv" id="energy"></div>
+      </div>
+      <div class="card">
+        <h2>Steel &amp; bahan</h2>
+        <div class="big" id="steelBig"></div>
+        <div class="kv" id="steel"></div>
+      </div>
+      <div class="card">
+        <h2>Lahan</h2>
+        <div class="big" id="used"></div>
+        <div class="kv" id="land"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardhead">
+        <h2>Bandingkan gedung</h2>
+        <div class="zoomless">
+          <button type="button" class="btn" id="compareHouse">Semua hunian</button>
+          <button type="button" class="btn" id="compareOffice">Semua tempat kerja</button>
+        </div>
+      </div>
+      <p class="hint" id="compareHint">Hitung tiap jenis hunian (dengan tempat kerja yang dipilih) atau tiap tempat kerja (dengan hunian yang dipilih). Butuh beberapa detik.</p>
+      <div class="tablewrap"><table id="compare"></table></div>
+    </div>
+
+    <ul class="notes">
+      <li>Jalan mendatar dibuat berselang. Tiap jalan melayani baris gedung di atas dan bawahnya selama masih dalam 4 studs. Jalan tegak menempel ke gedung office terakhir, jadi tidak ada celah terbuang.</li>
+      <li>Pekerja datang dari penduduk. Office, Steelworks (100), dan Mine (5) butuh pekerja.</li>
+      <li>Listrik tidak dipakai bersama: tiap pembangkit hanya menghidupi gedung di dalam areanya. Coal plant di tengah (700×700) menjangkau seluruh lahan. Solar (100×100) hanya sampai 50 studs dari panelnya, jadi solar dipasang sebagai jalur di sela blok: tiap gedung punya panel dalam 50 studs.</li>
+      <li>Coal dibatasi batubara: maksimal 12 Mine × 200 per menit (600 kalau Mine sudah di-upgrade), dan tiap coal plant membakar 60 per menit. Coal otomatis dibuat secukupnya setelah dikurangi listrik wind dan solar di celah industri. Slot gedung yang tidak kebagian listrik dibiarkan kosong.</li>
+      <li>Kalau jalur solar dipakai, lebarnya menyesuaikan listrik gedung di sekitarnya setelah dikurangi bagian dari coal. Zona office butuh jalur jauh lebih lebar daripada zona hunian.</li>
+      <li>Desalinasi ada di tepi kiri atas, ujungnya menempel batas lahan. Ukurannya 33×68, tapi sebagian boleh di luar plot, jadi yang dihitung memakan lahan hanya 34×6. Satu cukup untuk air seluruh kota.</li>
+      <li>Ukuran Steelworks (34×26) dari info sebelumnya, karena di tabel kosong. Mine menghasilkan iron secara acak, jadi kecukupan iron belum bisa dihitung.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+"use strict";
+// Data dari "BC Building Stats + Grid.csv", hanya gedung yang ukurannya tercantum.
+// Hunian: [nama, lebar, tinggi, penduduk, income, upkeep, energi, steel, harga]
+const HOUSES = [
+  ["Two Story House", 2, 3, 8, 9, 0, 5, 0, 185],
+  ["House", 2, 3, 5, 10, 0, 5, 0, 142],
+  ["Low Income Apartment", 2, 4, 14, 6, 0, 5, 0, 300],
+  ["Middle Class Apartment", 2, 4, 10, 26, 0, 5, 0, 480],
+  ["Long Two Story Suburban House", 3, 4, 8, 10, 0, 5, 0, 203],
+  ["Suburban House 9", 3, 4, 5, 10, 0, 5, 0, 214],
+  ["Two Story Suburban House", 4, 4, 8, 10, 0, 5, 0, 215],
+  ["Suburban House 10", 4, 4, 8, 16, 0, 5, 0, 1260],
+  ["Suburban House 1", 4, 4, 5, 10, 0, 5, 0, 130],
+  ["Residential House 4", 4, 5, 5, 10, 0, 5, 0, 130],
+  ["Small Suburban Apartment", 6, 6, 24, 45, 8, 12, 0, 1200],
+  ["Large Suburban Apartment", 6, 10, 40, 75, 13, 20, 0, 2560],
+  ["Lowrise Apartment 2", 4, 5, 20, 80, 12, 15, 22, 2200],
+  ["Lowrise Apartment 3", 3, 6, 20, 80, 12, 15, 22, 2200],
+  ["Lowrise Apartment 5", 5, 6, 21, 84, 13, 16, 23, 2300],
+  ["Lowrise Apartment 1", 5, 11, 35, 140, 21, 26, 39, 4836],
+  ["Midtown Apartment 3", 4, 5, 21, 99, 15, 16, 41, 4100],
+  ["Midtown Apartment 7", 5, 6, 25, 118, 18, 19, 49, 4900],
+  ["Midtown Apartment 1", 6, 8, 26, 122, 18, 20, 51, 5100],
+  ["Mid Rise City Apartment 1", 4, 6, 32, 120, 17, 18, 54, 5400],
+  ["Midtown Apartment 2", 6, 9, 32, 150, 22, 24, 62, 6200],
+  ["Mid Rise City Apartment 2", 6, 8, 32, 150, 22, 24, 63, 6300],
+  ["Midtown Apartment 9", 6, 8, 33, 155, 23, 25, 64, 6400],
+  ["Midtown Apartment 5", 6, 9, 37, 174, 26, 28, 72, 7200],
+  ["Mid Rise City Apartment 3", 6, 7, 40, 180, 26, 30, 75, 7500],
+  ["Midtown Apartment 10", 6, 9, 40, 188, 28, 30, 78, 7800],
+  ["Midtown Apartment 6", 8, 8, 47, 221, 33, 35, 92, 9200],
+  ["High Rise City Apartment", 6, 8, 48, 225, 33, 36, 95, 9500],
+  ["Rose Apartment Tower", 5, 6, 30, 145, 21, 23, 115, 11500],
+  ["Apartment Tower", 5, 7, 37, 180, 26, 28, 145, 14500],
+  ["Slim Apartment Tower", 5, 5, 38, 180, 27, 29, 145, 14500],
+  ["Slab Apartment Block", 4, 12, 41, 195, 29, 31, 155, 15500],
+  ["Sloped Apartment Tower", 5, 7, 45, 215, 31, 34, 170, 17000],
+  ["Midtown Apartment Tower", 6, 7, 51, 245, 36, 38, 195, 19500],
+  ["Slab Apartment Tower", 4, 12, 52, 250, 36, 39, 200, 20000],
+  ["Small Glass Apartment Tower", 8, 8, 58, 280, 41, 44, 220, 22000],
+  ["White Apartment Tower", 7, 8, 60, 290, 42, 45, 230, 23000],
+  ["Brick Apartment Tower", 7, 9, 68, 325, 48, 51, 255, 25500],
+  ["Wide Apartment Complex", 8, 12, 92, 440, 64, 69, 350, 35000],
+  ["Midtown Apartment 12", 10, 21, 93, 437, 69, 70, 350, 35000],
+  ["Glass Apartment Tower", 12, 12, 180, 865, 126, 135, 700, 635600],
+].map(toBuilding);
+// Office: [nama, lebar, tinggi, pekerja, income, upkeep, energi, steel, harga]
+const OFFICES = [
+  ["Low Rise Office Building", 4, 8, 30, 420, 45, 40, 70, 16940],
+  ["Mid Rise Office Building 1", 5, 8, 50, 700, 85, 60, 210, 21000],
+  ["Basic Office Building 2", 6, 7, 60, 800, 95, 65, 240, 24000],
+  ["High Rise Office Building 1", 4, 7, 80, 1100, 140, 90, 360, 36000],
+  ["High Rise Office Building 2", 6, 7, 85, 1150, 145, 95, 380, 38000],
+  ["Twin High Rise Office Building", 6, 10, 105, 1450, 185, 115, 480, 94080],
+  ["Slim Office Tower 2", 5, 6, 83, 1150, 150, 90, 750, 75000],
+  ["Slim Office Tower", 5, 6, 86, 1200, 155, 95, 800, 80000],
+  ["Glass Office Block", 6, 7, 101, 1400, 180, 110, 950, 95000],
+  ["Slanted Roof Tower", 5, 6, 133, 1850, 240, 150, 1200, 120000],
+  ["Office Tower", 6, 7, 140, 1950, 255, 155, 1300, 130000],
+  ["Office Tower 2", 6, 7, 148, 2050, 265, 165, 1350, 135000],
+  ["SlopArms Tower", 6, 8, 166, 2300, 300, 185, 1500, 150000],
+  ["Tall Office Tower", 6, 7, 166, 2300, 300, 185, 1500, 150000],
+  ["Tall Office Tower 2", 6, 7, 169, 2350, 305, 190, 1550, 155000],
+  ["Grand Skyscraper", 6, 7, 191, 2650, 345, 210, 1750, 175000],
+  ["Plaza Office Tower", 10, 10, 270, 3750, 490, 300, 2450, 1479800],
+  // Komersial: income per pekerja tinggi, tapi boros lahan. Unggul kalau listrik yang jadi batas.
+  ["Convenient Bank", 4, 5, 8, 300, 30, 20, 0, 21160],
+  ["Shop", 3, 5, 2, 65, 3, 10, 0, 408],
+  ["Small Gas Station", 5, 5, 2, 80, 4, 10, 0, 561],
+  ["Sad Burger", 4, 5, 3, 85, 4, 12, 0, 600],
+  ["Snack Seagull", 4, 5, 0, 85, 0, 12, 0, 624],
+  ["Tech Shop", 3, 5, 4, 120, 5, 14, 0, 1044],
+  ["Medium Gas Station", 5, 5, 3, 95, 7, 10, 0, 1040],
+  ["Generic Restaurant", 5, 6, 5, 150, 6, 16, 0, 1416],
+  ["Retail Row", 4, 8, 5, 165, 7, 16, 0, 1456],
+  ["Strip Mall", 3, 5, 6, 200, 8, 20, 0, 2720],
+  ["Snack Seagull Express", 6, 8, 6, 200, 8, 20, 0, 1760],
+  ["Julep", 8, 9, 6, 200, 8, 20, 0, 1728],
+  ["Big Gas Station", 10, 10, 5, 175, 12, 20, 18, 1800],
+  ["Bowells", 6, 10, 7, 235, 9, 22, 20, 5120],
+  ["Large Supermarket", 13, 16, 8, 260, 10, 20, 24, 8640],
+].map(toBuilding);
+// Income setelah upgrade (dari info di game). Gedung lain belum diketahui angkanya.
+const UPGRADED_INCOME = { "Grand Skyscraper": 4240 };
+const applyUpgrade = (o, on) => (on && UPGRADED_INCOME[o.name] ? { ...o, income: UPGRADED_INCOME[o.name] } : o);
+
+// Dari layar Population dan income di game (cocok persis dengan 21.952 Low Income):
+// penduduk = kapasitas hunian + 20% pertumbuhan alami, dan Residents = income gedung
+// + seluruh penduduk × $2 (happiness 100%). Penduduk tambahan juga bisa bekerja.
+const NATURAL_GROWTH = 0.2;
+const RESIDENT_PAY = 2;
+const applyResidentIncome = (h, on) => {
+  if (!on) return h;
+  const people = h.people * (1 + NATURAL_GROWTH);
+  return { ...h, people, income: h.income + people * RESIDENT_PAY };
+};
+
+// Default = rencana income tertinggi yang ditemukan: Low Income + Grand Skyscraper upgrade.
+const DEFAULT_HOUSE = "Low Income Apartment";
+const DEFAULT_OFFICE = "Grand Skyscraper";
+
+function toBuilding([name, w, h, people, income, upkeep, energy, steel, cost]) {
+  return { name, w, h, people, income, upkeep, energy, steel, cost };
+}
+
+// Gedung tetap (ukuran dalam studs).
+const FIXED = {
+  coal:  { w: 24, h: 26, out: 6000, reach: 700, fuel: 60, upkeep: 18, name: "Coal Power Plant" },
+  wind:  { w: 1, h: 7, out: 200, reach: 200, upkeep: 2, name: "Wind Turbine" },
+  solar: { w: 1, h: 2, out: 20, reach: 100, cost: 100, name: "Solar Panel" },
+  mine:  { w: 14, h: 14, coal: 200, workers: 5, energy: 30, upkeep: 14, name: "Mine" },
+  steel: { w: 34, h: 26, rate: 100, workers: 100, energy: 400, upkeep: 120, coalPer: 1, ironPer: 2, name: "Steelworks" },
+  // Large Refinery tidak ada di tabel: sementara memakai angka Medium Refinery. Ganti kalau beda.
+  refinery: { w: 12, h: 16, energy: 220, workers: 60, upkeep: 240, name: "Large Refinery" },
+  // Ukuran asli 33×68, tapi sebagian boleh di luar plot; yang memakan lahan hanya 34×6.
+  desal: { w: 34, h: 6, energy: 200, upkeep: 25, name: "Desalination Plant" },
+};
+const WIND_MAX = 20;
+const MINE_MAX = 12;
+const MINE_RATE_UPGRADED = 600; // batubara per menit per Mine setelah upgrade maksimal
+const REFINERY_MIN = 4; // syarat Mine 600 per menit
+const LEVEL5_POP = 20000; // gedung level 5 terbuka di 20.000 penduduk
+const CELL = 10; // ukuran sel peta jangkauan listrik
+
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => Math.round(n).toLocaleString("id-ID");
+const signed = (n) => (n >= 0 ? "+" : "−") + fmt(Math.abs(n));
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+const rep = (type, n) => Array.from({ length: n }, () => ({ type, w: FIXED[type].w, h: FIXED[type].h }));
+const area = (list) => list.reduce((a, b) => a + b.w * b.h, 0);
+
+function readCfg() {
+  const num = (id, d) => {
+    const v = parseFloat($(id).value);
+    return Number.isFinite(v) && v >= 0 ? v : d;
+  };
+  const steelN = clamp(Math.floor(num("steelN", 0)), 0, 20);
+  const mines = clamp(Math.floor(num("mines", MINE_MAX)), 0, MINE_MAX);
+  const refineries = clamp(Math.floor(num("refineries", REFINERY_MIN)), 0, 20);
+  // Mine baru menghasilkan 600 per menit kalau sudah di-upgrade dan ada minimal 4 refinery.
+  const mineRate = $("mineUp").checked && refineries >= REFINERY_MIN ? MINE_RATE_UPGRADED : FIXED.mine.coal;
+  // Batas coal plant: sebanyak yang batubaranya bisa dipasok Mine setelah dipakai Steelworks.
+  const coalMax = Math.max(0, Math.floor((mines * mineRate - steelN * FIXED.steel.rate * FIXED.steel.coalPer) / FIXED.coal.fuel));
+  const coalRaw = $("coal").value.trim();
+  return {
+    steelN, mines, refineries, mineRate, coalMax,
+    coalAuto: coalRaw === "",
+    coal: coalRaw === "" ? coalMax : clamp(Math.floor(num("coal", coalMax)), 0, 200),
+    map: clamp(Math.round(num("map", 600) / 2) * 2, 100, 2000),
+    road: clamp(Math.round(num("road", 2) / 2) * 2, 2, 40),
+    dist: clamp(num("dist", 4), 0, 40),
+    residentIncome: $("residentIncome").checked,
+    house: applyResidentIncome(HOUSES[Number($("house").value)] || HOUSES[0], $("residentIncome").checked),
+    upgrade: $("upgrade").checked,
+    office: applyUpgrade(OFFICES[Number($("office").value)] || OFFICES[0], $("upgrade").checked),
+    needWorkers: $("needWorkers").checked,
+    autoPct: $("autoPct").checked,
+    pct: clamp(num("pct", 30), 0, 100),
+    wind: clamp(Math.floor(num("wind", WIND_MAX)), 0, WIND_MAX),
+    solar: $("solar").checked,
+    desalPop: num("desalPop", 0),
+  };
+}
+
+// Baris gedung bw×bh (bh = kedalaman dari jalan) di satu zona dengan jalan mendatar berselang.
+// Tiap jalan melayani k baris di atas dan k baris di bawahnya, selama masih dalam jarak maks.
+function layoutRows(z, bw, bh, r, dist) {
+  const k = Math.floor(dist / bh) + 1;
+  const period = r + 2 * k * bh;
+  const yEnd = z.y + z.h;
+  const buildings = [], roads = [];
+  for (let ry = z.roadAbove ? z.y - r : z.y; ry + r < yEnd; ry += period) {
+    if (ry >= z.y) roads.push({ x: z.x, y: ry, w: z.w, h: r });
+    const next = ry + period;
+    const hasNext = next + r < yEnd;
+    const nextRoad = hasNext ? next : z.roadBelow ? yEnd : Infinity;
+    const bound = hasNext ? next : yEnd;
+    for (let y = ry + r; y + bh <= bound; y += bh) {
+      const near = y - (ry + r) <= dist || nextRoad - (y + bh) <= dist;
+      if (!near) continue;
+      for (let x = z.x; x + bw <= z.x + z.w; x += bw) buildings.push({ x, y, w: bw, h: bh });
+    }
+  }
+  return { buildings, roads };
+}
+
+// Solar hanya menghidupi gedung dalam 50 studs dari panelnya (listrik tidak dipakai bersama).
+// Jadi zona dipecah: potongan blok (jalan di atas dan bawah), lalu jalur solar, lalu blok lagi.
+// Potongan di tepi zona hanya punya jalur di satu sisi, jadi maksimal 49 studs;
+// potongan di tengah diapit dua jalur, jadi maksimal 98 studs.
+const EDGE_CHUNK = FIXED.solar.reach / 2 - 1;
+const MID_CHUNK = 2 * EDGE_CHUNK;
+
+function layoutWithStrips(z, bw, bh, r, dist, energyEach, solarShare) {
+  if (solarShare <= 0) return layoutRows(z, bw, bh, r, dist);
+  const k = Math.floor(dist / bh) + 1;
+  const period = r + 2 * k * bh;
+  const blocksIn = (limit) => Math.max(0, Math.floor((limit - r) / period));
+  const solarPerStud = FIXED.solar.out / (FIXED.solar.w * FIXED.solar.h); // energi per stud² jalur
+  // Listrik (bagian solar) satu potongan m blok, per 1 stud lebar zona.
+  const chunkEnergy = (m) => (m * 2 * k * energyEach * solarShare) / bw;
+  const stripFor = (energy) => Math.max(FIXED.solar.h, Math.ceil(energy / solarPerStud / FIXED.solar.h) * FIXED.solar.h);
+  const hsMax = stripFor(chunkEnergy(Math.max(1, blocksIn(MID_CHUNK))));
+
+  const out = { buildings: [], roads: [], panels: [] };
+  const yEnd = z.y + z.h;
+  let y = z.y;
+  const placeChunk = (m) => {
+    if (m <= 0) return;
+    const res = layoutRows({ x: z.x, y, w: z.w, h: m * period, roadAbove: false, roadBelow: true }, bw, bh, r, dist);
+    out.buildings.push(...res.buildings);
+    out.roads.push(...res.roads, { x: z.x, y: y + m * period, w: z.w, h: r });
+    y += m * period + r;
+  };
+  const placeStrip = (hs) => {
+    for (let sy = y; sy + FIXED.solar.h <= y + hs; sy += FIXED.solar.h) {
+      for (let x = z.x; x + FIXED.solar.w <= z.x + z.w; x += FIXED.solar.w) out.panels.push({ type: "solar", x, y: sy, w: FIXED.solar.w, h: FIXED.solar.h });
+    }
+    y += hs;
+  };
+  // Potongan setelah jalur: "tengah" (diapit dua jalur, ≤98) kalau masih muat jalur di bawahnya,
+  // atau "tepi" (hanya dilayani jalur di atasnya, ≤49).
+  const nextChunk = (from) => {
+    const rem = yEnd - from;
+    if (rem < period + r) return { m: 0, mid: false };
+    if (rem <= EDGE_CHUNK) return { m: blocksIn(rem), mid: false };
+    const m = blocksIn(Math.min(MID_CHUNK, rem - hsMax));
+    return m >= 1 ? { m, mid: true } : { m: blocksIn(Math.min(EDGE_CHUNK, rem)), mid: false };
+  };
+
+  // Tiap jalur hanya setebal listrik yang dibutuhkan potongan di atas dan di bawahnya.
+  // Potongan tengah dibagi dua jalur; potongan tepi ditanggung penuh satu jalur.
+  const first = blocksIn(Math.min(EDGE_CHUNK, yEnd - y));
+  placeChunk(first);
+  let owedAbove = chunkEnergy(first);
+  while (yEnd - y >= FIXED.solar.h) {
+    let hs = hsMax;
+    for (let pass = 0; pass < 2; pass++) {
+      const nc = nextChunk(y + hs);
+      const below = nc.m ? chunkEnergy(nc.m) * (nc.mid ? 0.5 : 1) : 0;
+      hs = Math.min(stripFor(owedAbove + below), Math.floor((yEnd - y) / FIXED.solar.h) * FIXED.solar.h);
+    }
+    if (owedAbove === 0 && nextChunk(y + hs).m === 0) break;
+    placeStrip(hs);
+    const nc = nextChunk(y);
+    if (!nc.m) break;
+    placeChunk(nc.m);
+    if (!nc.mid) break;
+    owedAbove = chunkEnergy(nc.m) * 0.5;
+  }
+  return out;
+}
+
+// Coba dua arah putar, ambil yang memuat gedung lebih banyak.
+// solarShare = null berarti tanpa jalur solar.
+function fillZone(z, def, kind, r, dist, blocked, energyEach, solarShare) {
+  const free = (p) => !blocked.some((q) => hit(p, q));
+  const run = (bw, bh) => {
+    const out = solarShare == null
+      ? { ...layoutRows(z, bw, bh, r, dist), panels: [] }
+      : layoutWithStrips(z, bw, bh, r, dist, energyEach, solarShare);
+    out.buildings = out.buildings.filter(free).map((p) => ({ ...p, type: kind }));
+    out.panels = (out.panels || []).filter(free);
+    return out;
+  };
+  const a = run(def.w, def.h);
+  const b = def.w === def.h ? a : run(def.h, def.w);
+  return b.buildings.length > a.buildings.length ? b : a;
+}
+
+// Gedung industri berderet di rak. Pola: jalan, rak (rata atas), rak (rata bawah), jalan, ...
+// jadi setiap gedung menempel ke satu jalan.
+function packBand(items, M, r) {
+  if (!items.length) return { placed: [], pockets: [], roads: [], h: 0 };
+  const shelves = [];
+  let cur = { items: [], w: 0, h: 0 };
+  for (const it of items) {
+    if (cur.items.length && cur.w + it.w > M) { shelves.push(cur); cur = { items: [], w: 0, h: 0 }; }
+    cur.items.push(it); cur.w += it.w; cur.h = Math.max(cur.h, it.h);
+  }
+  shelves.push(cur);
+
+  const placed = [], pockets = [], roads = [];
+  let y = 0;
+  shelves.forEach((s, i) => {
+    if (i % 2 === 0) { roads.push(y); y += r; }
+    const alignBottom = i % 2 === 1;
+    // Celah di ujung rak menempel jalan (di atas untuk rak genap, di bawah untuk rak ganjil),
+    // jadi bagian dekat jalan bisa diisi hunian.
+    const road = alignBottom ? "bottom" : "top";
+    const off = Math.floor((M - s.w) / 2);
+    let x = off;
+    if (off > 0) pockets.push({ x: 0, y, w: off, h: s.h, road });
+    for (const it of s.items) {
+      const gap = s.h - it.h;
+      placed.push({ ...it, x, y: alignBottom ? y + gap : y });
+      if (gap > 0) pockets.push({ x, y: alignBottom ? y : y + it.h, w: it.w, h: gap });
+      x += it.w;
+    }
+    if (M - x > 0) pockets.push({ x, y, w: M - x, h: s.h, road });
+    y += s.h;
+  });
+  roads.push(y);
+  return { placed, pockets, roads, h: y + r };
+}
+
+// Isi celah kosong dengan gedung tanpa jalan (wind/solar); kembalikan sisa celah.
+function fillPockets(pockets, type, want) {
+  const { w, h } = FIXED[type];
+  const placed = [], left = [];
+  for (const p of pockets) {
+    if (placed.length >= want) { left.push(p); continue; }
+    const opts = [[w, h], [h, w]].map(([ow, oh]) => ({ ow, oh, c: Math.floor(p.w / ow), r: Math.floor(p.h / oh) }));
+    const o = opts[0].c * opts[0].r >= opts[1].c * opts[1].r ? opts[0] : opts[1];
+    if (o.c * o.r === 0) { left.push(p); continue; }
+    const n = Math.min(o.c * o.r, want - placed.length);
+    const cols = Math.ceil(n / o.r);
+    for (let i = 0; i < n; i++) {
+      placed.push({ type, x: p.x + Math.floor(i / o.r) * o.ow, y: p.y + (i % o.r) * o.oh, w: o.ow, h: o.oh });
+    }
+    left.push({ x: p.x + cols * o.ow, y: p.y, w: p.w - cols * o.ow, h: p.h });
+    left.push({ x: p.x, y: p.y + o.r * o.oh, w: cols * o.ow, h: p.h - o.r * o.oh });
+  }
+  return { placed, left: left.filter((q) => q.w > 0 && q.h > 0) };
+}
+
+// Peta jangkauan listrik berbasis sel, supaya ribuan solar tetap cepat dicek.
+function coverageTest(M, sources) {
+  const covers = (s) => {
+    const R = FIXED[s.type].reach / 2, cx = s.x + s.w / 2, cy = s.y + s.h / 2;
+    return cx - R <= 0 && cy - R <= 0 && cx + R >= M && cy + R >= M;
+  };
+  if (sources.some((s) => s.type === "coal" && covers(s))) return () => true;
+  const n = Math.ceil(M / CELL), grid = new Uint8Array(n * n);
+  for (const s of sources) {
+    const R = FIXED[s.type].reach / 2, cx = s.x + s.w / 2, cy = s.y + s.h / 2;
+    const x0 = clamp(Math.floor((cx - R) / CELL), 0, n - 1), x1 = clamp(Math.floor((cx + R) / CELL), 0, n - 1);
+    const y0 = clamp(Math.floor((cy - R) / CELL), 0, n - 1), y1 = clamp(Math.floor((cy + R) / CELL), 0, n - 1);
+    for (let y = y0; y <= y1; y++) grid.fill(1, y * n + x0, y * n + x1 + 1);
+  }
+  const cell = (v) => clamp(Math.floor(v / CELL), 0, n - 1);
+  return (b) => grid[cell(b.y + b.h / 2) * n + cell(b.x + b.w / 2)] === 1;
+}
+
+// Isi bagian celah industri yang dekat jalan dengan baris hunian (dalam jarak maks ke jalan).
+// Sisa celah tetap untuk wind dan solar.
+function carveHomes(pk, def, dist) {
+  let best = { homes: [], rest: pk };
+  for (const [bw, bh] of [[def.w, def.h], [def.h, def.w]]) {
+    const rows = Math.min(Math.floor(dist / bh) + 1, Math.floor(pk.h / bh));
+    const perRow = Math.floor(pk.w / bw);
+    if (rows < 1 || perRow < 1 || rows * perRow <= best.homes.length) continue;
+    const homes = [];
+    for (let i = 0; i < rows; i++) {
+      const y = pk.road === "top" ? pk.y + i * bh : pk.y + pk.h - (i + 1) * bh;
+      for (let j = 0; j < perRow; j++) homes.push({ type: "home", x: pk.x + j * bw, y, w: bw, h: bh });
+    }
+    const used = rows * bh;
+    const rest = pk.h > used ? { x: pk.x, y: pk.road === "top" ? pk.y + used : pk.y, w: pk.w, h: pk.h - used } : null;
+    best = { homes, rest };
+  }
+  return best;
+}
+
+// solarShare: bagian listrik kota yang harus dari jalur solar (sisanya dari coal yang menjangkau semua).
+// null = tanpa solar.
+// Cache tata letak per perhitungan: pencarian porsi dan jumlah coal sering meminta tata letak yang sama.
+const placeCache = new Map();
+const PLACE_KEYS = ["map", "road", "dist", "pct", "coal", "steelN", "mines", "refineries", "carve"];
+const PLACE_CACHE_MAX = 40; // tiap tata letak berisi puluhan ribu gedung, jadi cache dibatasi
+
+function placeCity(cfg, solarShare) {
+  const key = PLACE_KEYS.map((k) => cfg[k]).join("|") + `|${cfg.house.name}|${cfg.office.name}|${solarShare}`;
+  if (!placeCache.has(key)) {
+    if (placeCache.size >= PLACE_CACHE_MAX) placeCache.delete(placeCache.keys().next().value);
+    placeCache.set(key, placeCityUncached(cfg, solarShare));
+  }
+  const c = placeCache.get(key);
+  // Salinan dangkal: build() memotong daftar gedung, jadi jangan ubah isi cache.
+  return { ...c, offices: [...c.offices], homes: [...c.homes] };
+}
+
+function placeCityUncached(cfg, solarShare) {
+  const M = cfg.map, r = cfg.road;
+  const half = (n) => [Math.ceil(n / 2), Math.floor(n / 2)];
+  const [s1, s2] = half(cfg.steelN), [m1, m2] = half(cfg.mines);
+  // Coal plant di tengah deretan supaya jangkauannya menutupi seluruh lahan.
+  const [f1, f2] = half(cfg.refineries);
+  const items = [...rep("steel", s1), ...rep("refinery", f1), ...rep("mine", m1), ...rep("coal", cfg.coal),
+    ...rep("mine", m2), ...rep("refinery", f2), ...rep("steel", s2)];
+  const band = packBand(items, M, r);
+  const top = clamp(Math.round((M - band.h) / 2), 0, M);
+  const down = (o) => ({ ...o, y: o.y + top });
+  const industry = band.placed.map(down);
+  const roads = band.roads.map((y) => ({ x: 0, y: y + top, w: M, h: r }));
+  const pockets = [], bandHomes = [];
+  for (const pk of band.pockets.map(down)) {
+    if (!pk.road || !cfg.carve) { pockets.push(pk); continue; }
+    const carved = carveHomes(pk, cfg.house, cfg.dist);
+    bandHomes.push(...carved.homes);
+    if (carved.rest) pockets.push(carved.rest);
+  }
+
+  const desal = { type: "desal", x: 0, y: r, w: FIXED.desal.w, h: FIXED.desal.h };
+  const officeW = Math.round((M * cfg.pct) / 100 / 2) * 2;
+  const bottomY = top + band.h;
+  const zones = [
+    { x: 0, y: 0, w: M, h: top, roadAbove: false, roadBelow: band.h > 0 },
+    { x: 0, y: bottomY, w: M, h: M - bottomY, roadAbove: band.h > 0, roadBelow: false },
+  ].filter((z) => z.h > r);
+  const homeEnergy = cfg.house.energy + (cfg.house.people / 1000) * cfg.desalPop;
+
+  const offices = [], homes = [...bandHomes], strips = [];
+  for (const z of zones) {
+    let x = 0;
+    if (officeW > r) {
+      const res = fillZone({ ...z, x: 0, w: officeW - r }, cfg.office, "office", r, cfg.dist, [desal], cfg.office.energy, solarShare);
+      // Jalan tegak menempel ke office terakhir, sisa lahan diberikan ke hunian.
+      const right = res.buildings.reduce((m, b) => Math.max(m, b.x + b.w), 0);
+      if (right > 0) {
+        offices.push(...res.buildings);
+        roads.push(...res.roads.map((rd) => ({ ...rd, w: right })));
+        strips.push(...res.panels.filter((s) => s.x + s.w <= right));
+        roads.push({ x: right, y: z.y, w: r, h: z.h });
+        x = right + r;
+      }
+    }
+    if (M - x > r) {
+      const res = fillZone({ ...z, x, w: M - x - r }, cfg.house, "home", r, cfg.dist, [desal], homeEnergy, solarShare);
+      homes.push(...res.buildings);
+      roads.push(...res.roads);
+      strips.push(...res.panels);
+      roads.push({ x: M - r, y: z.y, w: r, h: z.h });
+    }
+  }
+  return { M, industry, pockets, roads, strips, desal, offices, homes };
+}
+
+// Beban tetap industri (Steelworks, Mine, Refinery, desalinasi): listrik, pekerja, dan upkeep.
+function industryLoad(cfg) {
+  const F = FIXED;
+  return {
+    energy: cfg.steelN * F.steel.energy + cfg.mines * F.mine.energy + cfg.refineries * F.refinery.energy + F.desal.energy,
+    workers: cfg.steelN * F.steel.workers + cfg.mines * F.mine.workers + cfg.refineries * F.refinery.workers,
+    upkeep: cfg.steelN * F.steel.upkeep + cfg.mines * F.mine.upkeep + cfg.refineries * F.refinery.upkeep + F.desal.upkeep,
+  };
+}
+
+// Tanpa solar, listrik coal + wind terbatas. Pilih jumlah tempat kerja (nO) dan hunian (nH)
+// dari slot yang tersedia supaya income bersih tertinggi, listrik cukup, dan pekerja terisi.
+function fitToEnergy(cfg, slotsO, slotsH, energyLeft) {
+  const O = cfg.office, H = cfg.house;
+  const eH = H.energy + (H.people / 1000) * cfg.desalPop;
+  const fixedWorkers = industryLoad(cfg).workers;
+  const netO = O.income - O.upkeep, netH = H.income - H.upkeep;
+  let best = { nO: 0, nH: Math.min(slotsH, Math.max(0, Math.floor(energyLeft / eH))), net: -Infinity };
+  for (let nO = 0; nO <= slotsO; nO++) {
+    const left = energyLeft - nO * O.energy;
+    if (left < 0) break;
+    const nH = Math.min(slotsH, Math.floor(left / eH));
+    if (cfg.needWorkers && nO * O.people + fixedWorkers > nH * H.people && nO > 0) break;
+    const net = nO * netO + nH * netH;
+    if (net > best.net) best = { nO, nH, net };
+  }
+  return best;
+}
+
+const SOLAR_SHARE_ROUNDS = 3;
+
+// Dengan solar: jalur solar menanggung listrik kota yang tidak tertutup coal.
+// Bagian coal bergantung pada jumlah gedung, jadi dihitung ulang beberapa putaran.
+function placeWithSolar(cfg) {
+  const F = FIXED;
+  const shared = cfg.coal * F.coal.out + cfg.wind * F.wind.out
+    - industryLoad(cfg).energy;
+  const homeEnergy = cfg.house.energy + (cfg.house.people / 1000) * cfg.desalPop;
+  let share = 1, c = null;
+  for (let i = 0; i < SOLAR_SHARE_ROUNDS; i++) {
+    c = placeCity(cfg, share);
+    const cityDemand = c.offices.length * cfg.office.energy + c.homes.length * homeEnergy;
+    const next = cityDemand > 0 ? clamp(1 - shared / cityDemand, 0, 1) : 0;
+    if (Math.abs(next - share) < 0.01) break;
+    share = next;
+  }
+  return c;
+}
+
+const COAL_FIT_ROUNDS = 6;
+
+// Tanpa solar dengan coal otomatis: coal plant secukupnya untuk semua slot gedung,
+// paling banyak sesuai pasokan batubara. Coal plant memakan lahan, jadi dihitung ulang beberapa putaran.
+function fitCoal(cfg) {
+  const F = FIXED;
+  const homeEnergy = cfg.house.energy + (cfg.house.people / 1000) * cfg.desalPop;
+  const fixed = industryLoad(cfg).energy;
+  // Kekurangan listrik kalau dipasang n coal plant (≤ 0 berarti cukup untuk semua slot gedung).
+  const deficit = (n) => {
+    const c = placeCity({ ...cfg, coal: n }, null);
+    // Wind dan solar di celah industri ikut menyumbang, jadi coal yang dibutuhkan berkurang.
+    const wind = fillPockets(c.pockets, "wind", cfg.wind);
+    const pocketSolar = fillPockets(wind.left, "solar", Infinity).placed.length;
+    const free = wind.placed.length * F.wind.out + pocketSolar * F.solar.out;
+    return c.offices.length * cfg.office.energy + c.homes.length * homeEnergy + fixed - free - n * F.coal.out;
+  };
+  // Tebak dengan beberapa putaran, simpan n terkecil yang cukup; lalu turunkan selama masih cukup.
+  let n = Math.min(cfg.coalMax, 1), best = null;
+  for (let i = 0; i < COAL_FIT_ROUNDS; i++) {
+    const d = deficit(n);
+    if (d <= 0 && (best === null || n < best)) best = n;
+    const next = clamp(n + Math.ceil(d / F.coal.out), 0, cfg.coalMax);
+    if (next === n) break;
+    n = next;
+  }
+  if (best === null) return { ...cfg, coal: cfg.coalMax };
+  while (best > 0 && deficit(best - 1) <= 0) best--;
+  return { ...cfg, coal: best };
+}
+
+// Slot office yang tidak kebagian pekerja jangan dibiarkan kosong: isi dengan hunian kecil
+// (menempel jalan yang sama). Penduduk tambahannya bisa menghidupkan sebagian slot sebagai office lagi.
+function refillOfficeSlots(cfg, c, slots, energyBudget) {
+  const O = cfg.office, H = cfg.house;
+  const eH = H.energy + (H.people / 1000) * cfg.desalPop;
+  const belowRoad = new Set(c.roads.filter((rd) => rd.w > rd.h).map((rd) => rd.y + rd.h));
+  const homesIn = (s) => carveHomes({ ...s, road: belowRoad.has(s.y) ? "top" : "bottom" }, H, cfg.dist).homes;
+  const perSlot = homesIn(slots[0]).length;
+  const fixedWorkers = industryLoad(cfg).workers;
+  const spare = c.homes.length * H.people - c.offices.length * O.people - fixedWorkers;
+  let energy = energyBudget - c.offices.length * O.energy - c.homes.length * eH;
+  const n = slots.length, popPer = perSlot * H.people, energyPer = perSlot * eH;
+  // x slot jadi office, sisanya hunian: pekerja dan listrik harus tetap cukup.
+  let x = cfg.needWorkers ? Math.floor((spare + popPer * n) / (O.people + popPer)) : n;
+  if (O.energy > energyPer) x = Math.min(x, Math.floor((energy - energyPer * n) / (O.energy - energyPer)));
+  x = clamp(x, 0, n);
+  c.offices.push(...slots.slice(0, x));
+  energy -= x * O.energy;
+  for (const s of slots.slice(x)) {
+    const homes = homesIn(s);
+    if (homes.length * eH > energy) break;
+    energy -= homes.length * eH;
+    c.homes.push(...homes);
+  }
+}
+
+function build(cfgIn) {
+  const cfg = !cfgIn.solar && cfgIn.coalAuto ? fitCoal(cfgIn) : cfgIn;
+  const c = cfg.solar ? placeWithSolar(cfg) : placeCity(cfg, null);
+  const wind = fillPockets(c.pockets, "wind", cfg.wind);
+  // Solar di celah zona industri selalu dipakai: lahannya tidak bisa untuk gedung, jadi gratis.
+  const pocketSolar = fillPockets(wind.left, "solar", Infinity).placed;
+  const solar = [...pocketSolar, ...c.strips];
+  const coal = c.industry.filter((b) => b.type === "coal");
+  const H = cfg.house, O = cfg.office, F = FIXED;
+  const supply = { coal: coal.length * F.coal.out, wind: wind.placed.length * F.wind.out, solar: solar.length * F.solar.out };
+  const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+  const load = industryLoad(cfg);
+  const fixedDemand = load.energy;
+
+  const slotsO = c.offices.length, slotsH = c.homes.length;
+  if (!cfg.solar) {
+    const fit = fitToEnergy(cfg, slotsO, slotsH, sum(supply) - fixedDemand);
+    const emptyO = c.offices.slice(fit.nO);
+    c.offices = c.offices.slice(0, fit.nO);
+    c.homes = c.homes.slice(0, fit.nH);
+    if (emptyO.length && fit.nH === slotsH) refillOfficeSlots(cfg, c, emptyO, sum(supply) - fixedDemand);
+  }
+  const nH = c.homes.length, nO = c.offices.length;
+
+  const pop = nH * H.people;
+  const demand = {
+    office: nO * O.energy,
+    home: nH * H.energy,
+    steel: cfg.steelN * F.steel.energy,
+    mine: cfg.mines * F.mine.energy,
+    refinery: cfg.refineries * F.refinery.energy,
+    desal: F.desal.energy + (pop / 1000) * cfg.desalPop,
+  };
+
+  const gross = nO * O.income + nH * H.income;
+  const upkeep = nO * O.upkeep + nH * H.upkeep + load.upkeep
+    + coal.length * F.coal.upkeep + wind.placed.length * F.wind.upkeep;
+  const steelPerMin = cfg.steelN * F.steel.rate;
+
+  const consumers = [...c.offices, ...c.homes, ...c.industry.filter((b) => b.type !== "coal"), c.desal];
+  const covered = coverageTest(c.M, [...coal, ...wind.placed, ...solar]);
+  const uncovered = consumers.filter((b) => !covered(b)).length;
+
+  return {
+    ...c, cfg, coal, wind: wind.placed, solar, pocketSolar, slotsO, slotsH,
+    demand, supply, demandTotal: sum(demand), supplyTotal: sum(supply), uncovered,
+    pop, workers: nO * O.people + load.workers,
+    gross, upkeep, net: gross - upkeep,
+    steelCost: nO * O.steel + nH * H.steel,
+    buildCost: nO * O.cost + nH * H.cost + solar.length * F.solar.cost,
+    steelPerMin,
+    coalMade: cfg.mines * cfg.mineRate,
+    coalNeed: coal.length * F.coal.fuel + steelPerMin * F.steel.coalPer,
+    ironNeed: steelPerMin * F.steel.ironPer,
+  };
+}
+
+// Kota sah: penduduk ≥ 20.000, dan kalau pekerja wajib terisi, pekerja ≤ penduduk.
+const cityOk = (p) => p.pop >= LEVEL5_POP && (!p.cfg.needWorkers || p.workers <= p.pop);
+
+// Porsi lahan tempat kerja terbesar yang masih memenuhi cityOk.
+function autoPct(cfg) {
+  let lo = 0, hi = 100;
+  while (hi - lo > 1) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (cityOk(build({ ...cfg, pct: mid }))) lo = mid; else hi = mid;
+  }
+  return lo;
+}
+
+// Tanpa solar, lahan bukan lagi batasnya: cari porsi lahan dengan income bersih tertinggi
+// (langkah 5%, lalu dihaluskan per 1% di sekitar yang terbaik).
+function bestPctByNet(cfg) {
+  const netAt = (pct) => {
+    const p = build({ ...cfg, pct });
+    return cityOk(p) ? p.net : -Infinity;
+  };
+  let best = 0, bestNet = -Infinity;
+  const tryPct = (pct) => { const n = netAt(pct); if (n > bestNet) { bestNet = n; best = pct; } };
+  for (let pct = 0; pct <= 100; pct += 5) tryPct(pct);
+  const center = best;
+  for (let pct = Math.max(0, center - 4); pct <= Math.min(100, center + 4); pct++) tryPct(pct);
+  return best;
+}
+
+const COAL_TUNE_RANGE = 6;
+
+// Coal otomatis memilih jumlah terkecil yang cukup, tapi deret industri bisa bertambah atau
+// berkurang satu rak dan mengubah celah solar. Coba jumlah di sekitarnya, ambil income tertinggi.
+function tuneCoal(p) {
+  if (!p.cfg.coalAuto || p.cfg.solar) return p;
+  let best = p;
+  for (let n = Math.max(0, p.coal.length - COAL_TUNE_RANGE); n <= Math.min(p.cfg.coalMax, p.coal.length + COAL_TUNE_RANGE); n++) {
+    if (n === p.coal.length) continue;
+    const q = build({ ...p.cfg, coal: n, coalAuto: false });
+    if (cityOk(q) && q.net > best.net) best = q;
+  }
+  return best;
+}
+
+function planOnce(cfg) {
+  if (!cfg.autoPct) return tuneCoal(build(cfg));
+  if (!cfg.solar) return tuneCoal(build({ ...cfg, pct: bestPctByNet(cfg) }));
+  return build({ ...cfg, pct: autoPct(cfg) });
+}
+
+const CARVE_PCT_STEPS = 3;
+
+// Celah industri dekat jalan bisa diisi hunian atau dibiarkan untuk solar; pakai yang lebih untung.
+// Hunian tambahan menambah pekerja, jadi porsi office dicoba sedikit lebih besar.
+function plan(cfg) {
+  placeCache.clear();
+  let best = planOnce({ ...cfg, carve: false });
+  if (best.cfg.solar) return best;
+  const basePct = best.cfg.pct;
+  for (let pct = basePct; pct <= Math.min(100, basePct + CARVE_PCT_STEPS); pct++) {
+    const p = tuneCoal(build({ ...cfg, carve: true, autoPct: false, pct }));
+    if (cityOk(p) && p.net > best.net) best = p;
+  }
+  placeCache.clear();
+  return best;
+}
+
+const css = getComputedStyle(document.documentElement);
+const COLOR = (k) => css.getPropertyValue("--" + k).trim();
+
+// Tampilan peta: z = perbesaran, (x, y) = pojok kiri atas yang terlihat, dalam piksel kanvas.
+const ZOOM_MAX = 40;
+const ZOOM_STEP = 1.5;
+const view = { z: 1, x: 0, y: 0 };
+let lastPlan = null;
+let drawQueued = false;
+
+function requestDraw() {
+  if (drawQueued || !lastPlan) return;
+  drawQueued = true;
+  requestAnimationFrame(() => { drawQueued = false; draw(lastPlan); });
+}
+
+function zoomAt(px, py, factor) {
+  const W = $("peta").width;
+  const wx = view.x + px / view.z, wy = view.y + py / view.z;
+  view.z = clamp(view.z * factor, 1, ZOOM_MAX);
+  const max = W - W / view.z;
+  view.x = clamp(wx - px / view.z, 0, max);
+  view.y = clamp(wy - py / view.z, 0, max);
+  requestDraw();
+}
+
+function panBy(dx, dy) {
+  const max = $("peta").width * (1 - 1 / view.z);
+  view.x = clamp(view.x - dx / view.z, 0, max);
+  view.y = clamp(view.y - dy / view.z, 0, max);
+  requestDraw();
+}
+
+// Nomor baris (dari atas) dan kolom (dari kiri) untuk tiap gedung sejenis, sebagai patokan di game.
+function numberRows(list) {
+  const rowOf = new Map([...new Set(list.map((b) => b.y))].sort((a, b) => a - b).map((y, i) => [y, i + 1]));
+  const cols = new Map();
+  [...list].sort((a, b) => a.y - b.y || a.x - b.x).forEach((b) => {
+    const row = rowOf.get(b.y);
+    const col = (cols.get(row) || 0) + 1;
+    cols.set(row, col);
+    b.row = row;
+    b.col = col;
+  });
+}
+
+const LABEL_MIN_PX = 28; // nomor baru digambar kalau gedung cukup besar di layar
+const LABEL_FONT = '"Archivo", "Arial Narrow", sans-serif';
+
+function drawLabels(ctx, p, S) {
+  const px = S * view.z; // piksel kanvas per stud
+  const span = ctx.canvas.width / px;
+  const vx = view.x / S, vy = view.y / S;
+  ctx.fillStyle = COLOR("bg");
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (const list of [p.offices, p.homes]) {
+    if (!list.length || Math.min(list[0].w, list[0].h) * px < LABEL_MIN_PX) continue;
+    const size = Math.min(Math.min(list[0].w, list[0].h) * px * 0.32, list[0].w * px / 3.2, 22);
+    ctx.font = `700 ${size / view.z}px ${LABEL_FONT}`;
+    for (const b of list) {
+      if (b.x + b.w < vx || b.x > vx + span || b.y + b.h < vy || b.y > vy + span) continue;
+      ctx.fillText(`${b.row}.${b.col}`, (b.x + b.w / 2) * S, (b.y + b.h / 2) * S);
+    }
+  }
+}
+
+function draw(p) {
+  lastPlan = p;
+  const cv = $("peta"), ctx = cv.getContext("2d");
+  const S = cv.width / p.M;
+  const rect = (o, inset) => ctx.fillRect(o.x * S + inset, o.y * S + inset, o.w * S - 2 * inset, o.h * S - 2 * inset);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = COLOR("land");
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(view.z, 0, 0, view.z, -view.x * view.z, -view.y * view.z);
+  ctx.fillStyle = COLOR("road");
+  p.roads.forEach((z) => rect(z, 0));
+
+  const groups = [
+    [p.offices, "c-office"], [p.homes, "c-home"],
+    [p.industry.filter((b) => b.type === "steel"), "c-steel"], [p.industry.filter((b) => b.type === "mine"), "c-mine"],
+    [p.industry.filter((b) => b.type === "refinery"), "c-refinery"],
+    [p.coal, "c-coal"], [[p.desal], "c-desal"], [p.wind, "c-wind"], [p.solar, "c-solar"],
+  ];
+  for (const [list, color] of groups) {
+    ctx.fillStyle = COLOR(color);
+    const inset = list.length && Math.min(list[0].w, list[0].h) * S * view.z > 3 ? 0.5 / view.z : 0;
+    list.forEach((b) => rect(b, inset));
+  }
+  drawLabels(ctx, p, S);
+}
+
+// Semua isi berasal dari angka hasil hitungan dan nama gedung di kode, bukan dari input teks.
+function kv(rows) {
+  return rows.map(([k, v, cls]) => `<span class="${cls || ""}">${k}</span><span class="${cls || ""}">${v}</span>`).join("");
+}
+
+function renderCity(p) {
+  const short = p.workers > p.pop;
+  $("income").innerHTML = `<span class="${p.net >= 0 ? "good" : "bad"}">${signed(p.net)}</span> <span class="hint">/ cycle</span>`;
+  $("city").innerHTML = kv([
+    [`${p.cfg.house.name} × ${fmt(p.homes.length)}`, fmt(p.pop) + " org"],
+    [`${p.cfg.office.name} × ${fmt(p.offices.length)}`, fmt(p.offices.length * p.cfg.office.people) + " kerja"],
+    ["Pekerja total (office, Steelworks, Mine)", fmt(p.workers), short && p.cfg.needWorkers ? "bad" : ""],
+    [short ? "Kurang pekerja" : "Penduduk tanpa kerja", fmt(Math.abs(p.pop - p.workers)), short && p.cfg.needWorkers ? "bad" : ""],
+    ["City level 5 (20.000 penduduk)", p.pop >= LEVEL5_POP ? "✓" : "belum", p.pop >= LEVEL5_POP ? "good" : "bad"],
+    ["Pemasukan kotor", fmt(p.gross)],
+    ["Upkeep", "−" + fmt(p.upkeep)],
+    ["Bersih per cycle", signed(p.net), "tot"],
+  ]);
+}
+
+function renderEnergy(p) {
+  const diff = p.supplyTotal - p.demandTotal;
+  $("balance").innerHTML = `<span class="${diff >= 0 ? "good" : "bad"}">${signed(diff)}</span>`;
+  const rows = [
+    [`Coal plant ${p.coal.length} × 6.000`, fmt(p.supply.coal)],
+    [`Wind ${p.wind.length} × 200`, fmt(p.supply.wind)],
+    [`Solar ${fmt(p.solar.length)} × 20`, fmt(p.supply.solar)],
+    [`  di celah industri / jalur kota`, `${fmt(p.pocketSolar.length)} / ${fmt(p.strips.length)}`],
+    ["Produksi", fmt(p.supplyTotal), "tot"],
+    [`Office ${fmt(p.offices.length)} × ${p.cfg.office.energy}`, fmt(p.demand.office)],
+    [`Hunian ${fmt(p.homes.length)} × ${p.cfg.house.energy}`, fmt(p.demand.home)],
+    [`Steelworks ${p.cfg.steelN} × 400`, fmt(p.demand.steel)],
+    [`Mine ${p.cfg.mines} × 30`, fmt(p.demand.mine)],
+    [`Refinery ${p.cfg.refineries} × ${FIXED.refinery.energy}`, fmt(p.demand.refinery)],
+    ["Desalinasi", fmt(p.demand.desal)],
+    ["Kebutuhan", fmt(p.demandTotal), "tot"],
+    p.uncovered ? ["Gedung di luar jangkauan", fmt(p.uncovered), "bad"] : ["Semua gedung dalam jangkauan", "✓", "good"],
+  ];
+  if (!p.cfg.solar) {
+    rows.push(["Tempat kerja dibangun / slot", `${fmt(p.offices.length)} / ${fmt(p.slotsO)}`]);
+    rows.push(["Hunian dibangun / slot", `${fmt(p.homes.length)} / ${fmt(p.slotsH)}`]);
+  }
+  if (p.cfg.wind > p.wind.length) rows.push(["Wind tidak muat di celah", fmt(p.cfg.wind - p.wind.length), "bad"]);
+  $("energy").innerHTML = kv(rows);
+}
+
+function renderSteel(p) {
+  const hours = p.steelPerMin ? p.steelCost / p.steelPerMin / 60 : Infinity;
+  const coalShort = p.coalNeed > p.coalMade;
+  $("steelBig").textContent = fmt(p.steelCost) + " steel";
+  $("steel").innerHTML = kv([
+    [`Office ${fmt(p.offices.length)} × ${fmt(p.cfg.office.steel)}`, fmt(p.offices.length * p.cfg.office.steel)],
+    [`Hunian ${fmt(p.homes.length)} × ${fmt(p.cfg.house.steel)}`, fmt(p.homes.length * p.cfg.house.steel)],
+    [`Produksi ${p.cfg.steelN} Steelworks`, fmt(p.steelPerMin) + "/menit"],
+    ["Waktu bikin semua steel", Number.isFinite(hours) ? hours.toFixed(1).replace(".", ",") + " jam" : "tanpa Steelworks", "tot"],
+    [`Batubara dari ${p.cfg.mines} Mine`, fmt(p.coalMade) + "/menit"],
+    ["Batubara dibutuhkan", fmt(p.coalNeed) + "/menit", coalShort ? "bad" : ""],
+    ["Iron dibutuhkan", fmt(p.ironNeed) + "/menit"],
+    ["Biaya bangun office + hunian + solar", "$" + fmt(p.buildCost), "tot"],
+  ]);
+}
+
+function renderLand(p) {
+  const total = p.M * p.M;
+  const roadArea = area(p.roads);
+  const built = area(p.offices) + area(p.homes) + area(p.industry) + area([p.desal]) + area(p.wind) + area(p.solar);
+  $("used").textContent = Math.round((built / total) * 100) + "% terisi gedung";
+  $("land").innerHTML = kv([
+    ["Total lahan", fmt(total) + " studs²"],
+    ["Office", fmt(area(p.offices))],
+    ["Hunian", fmt(area(p.homes))],
+    ["Industri + desalinasi", fmt(area(p.industry) + area([p.desal]))],
+    ["Wind + solar", fmt(area(p.wind) + area(p.solar))],
+    ["Jalan", fmt(roadArea)],
+    ["Kosong", fmt(Math.max(0, total - built - roadArea))],
+  ]);
+}
+
+function renderLegend(p) {
+  $("legend").innerHTML = [
+    ["c-office", p.cfg.office.name, p.offices.length],
+    ["c-home", p.cfg.house.name, p.homes.length],
+    ["c-coal", FIXED.coal.name, p.coal.length],
+    ["c-mine", FIXED.mine.name, p.cfg.mines],
+    ["c-steel", FIXED.steel.name, p.cfg.steelN],
+    ["c-refinery", FIXED.refinery.name, p.cfg.refineries],
+    ["c-desal", FIXED.desal.name, 1],
+    ["c-wind", FIXED.wind.name, p.wind.length],
+    ["c-solar", FIXED.solar.name, p.solar.length],
+    ["road", "Jalan", ""],
+  ].map(([c, n, v]) => `<li><span class="sw" style="background:var(--${c})"></span>${n}${v === "" ? "" : " <b>" + fmt(v) + "</b>"}</li>`).join("");
+}
+
+function render() {
+  const cfg = readCfg();
+  const p = plan(cfg);
+  $("pct").disabled = cfg.autoPct;
+  if (cfg.autoPct) $("pct").value = p.cfg.pct;
+  $("pctOut").textContent = Math.round(p.cfg.pct) + "%";
+  numberRows(p.offices);
+  numberRows(p.homes);
+  draw(p);
+  renderLegend(p);
+  renderCity(p);
+  renderEnergy(p);
+  renderSteel(p);
+  renderLand(p);
+}
+
+// Hitung semua hunian (atau semua tempat kerja) dengan pasangan yang dipilih;
+// satu per satu supaya halaman tetap responsif.
+async function compareAll(kind) {
+  const btns = [$("compareHouse"), $("compareOffice")], hint = $("compareHint");
+  btns.forEach((b) => { b.disabled = true; });
+  const cfg = readCfg();
+  const list = kind === "house" ? HOUSES : OFFICES;
+  const rows = [];
+  for (let i = 0; i < list.length; i++) {
+    hint.textContent = `Menghitung ${i + 1} dari ${list.length}…`;
+    await new Promise((r) => setTimeout(r, 0));
+    const item = kind === "office" ? applyUpgrade(list[i], cfg.upgrade) : applyResidentIncome(list[i], cfg.residentIncome);
+    rows.push({ i, p: plan({ ...cfg, [kind]: item }) });
+  }
+  rows.sort((a, b) => b.p.net - a.p.net);
+  const partner = kind === "house" ? cfg.office.name : cfg.house.name;
+  hint.textContent = `Diurutkan dari income bersih tertinggi, dengan ${partner}${cfg.solar ? ", dengan jalur solar" : ""}. Klik "Pakai" untuk memilih.`;
+  $("compare").innerHTML =
+    `<thead><tr><th>${kind === "house" ? "Hunian" : "Tempat kerja"}</th><th>Bersih/cycle</th><th>Hunian</th><th>Penduduk</th><th>Tempat kerja</th><th>Coal</th><th>Solar</th><th>Steel</th><th></th></tr></thead><tbody>` +
+    rows.map(({ i, p }) => `<tr class="${list[i].name === cfg[kind].name ? "sel" : ""}"><td>${list[i].name} (${list[i].w}×${list[i].h})</td><td class="${p.net >= 0 ? "good" : "bad"}">${signed(p.net)}</td><td>${fmt(p.homes.length)}</td><td>${fmt(p.pop)}</td><td>${fmt(p.offices.length)}</td><td>${p.coal.length}</td><td>${fmt(p.solar.length)}</td><td>${fmt(p.steelCost)}</td><td><button type="button" class="btn" data-kind="${kind}" data-idx="${i}">Pakai</button></td></tr>`).join("") +
+    "</tbody>";
+  btns.forEach((b) => { b.disabled = false; });
+}
+
+function fillSelect(sel, list, unit, defName) {
+  sel.innerHTML = list.map((b, i) => `<option value="${i}">${b.name} (${b.w}×${b.h}) · ${b.people} ${unit} · $${b.income - b.upkeep}</option>`).join("");
+  sel.value = String(Math.max(0, list.findIndex((b) => b.name === defName)));
+}
+
+// Gabungkan persegi sejenis yang bersebelahan (ribuan solar 1×2 jadi beberapa blok) supaya overlay di game ringan.
+function mergeRects(list) {
+  const rows = new Map();
+  for (const b of [...list].sort((a, c) => a.y - c.y || a.x - c.x)) {
+    const key = b.y + ":" + b.h;
+    const row = rows.get(key) || [];
+    const last = row[row.length - 1];
+    if (last && last.x + last.w === b.x) last.w += b.w; else row.push({ x: b.x, y: b.y, w: b.w, h: b.h });
+    rows.set(key, row);
+  }
+  const strips = [...rows.values()].flat().sort((a, c) => a.x - c.x || a.w - c.w || a.y - c.y);
+  const out = [];
+  for (const s of strips) {
+    const last = out[out.length - 1];
+    if (last && last.x === s.x && last.w === s.w && last.y + last.h === s.y) last.h += s.h; else out.push({ ...s });
+  }
+  return out;
+}
+
+// Satu baris per persegi: jenis|label|x|y|w|h (studs dari pojok kiri atas lahan). Baris pertama: ukuran lahan.
+function exportLayout(p) {
+  const lines = [`M|${p.M}`];
+  const add = (type, label, b) => lines.push([type, label, b.x, b.y, b.w, b.h].join("|"));
+  p.roads.forEach((b) => add("road", "Jalan", b));
+  p.offices.forEach((b) => add("office", `${p.cfg.office.name} ${b.row}.${b.col}`, b));
+  p.homes.forEach((b) => add("home", `${p.cfg.house.name} ${b.row}.${b.col}`, b));
+  [...p.industry, p.desal].forEach((b) => add(b.type, FIXED[b.type].name, b));
+  p.wind.forEach((b) => add("wind", FIXED.wind.name, b));
+  mergeRects(p.solar).forEach((b) => add("solar", FIXED.solar.name, b));
+  const url = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/plain" }));
+  const a = Object.assign(document.createElement("a"), { href: url, download: "kota_layout.txt" });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+fillSelect($("house"), HOUSES, "org", DEFAULT_HOUSE);
+fillSelect($("office"), OFFICES, "pekerja", DEFAULT_OFFICE);
+
+let queued = false;
+$("cfg").addEventListener("input", () => {
+  if (queued) return;
+  queued = true;
+  requestAnimationFrame(() => { queued = false; render(); });
+});
+$("cfg").addEventListener("submit", (ev) => ev.preventDefault());
+$("exportGame").addEventListener("click", () => { if (lastPlan) exportLayout(lastPlan); });
+$("compareHouse").addEventListener("click", () => compareAll("house"));
+$("compareOffice").addEventListener("click", () => compareAll("office"));
+$("compare").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-kind]");
+  if (!b) return;
+  $(b.dataset.kind).value = b.dataset.idx;
+  render();
+  document.querySelectorAll("#compare tr").forEach((tr) => tr.classList.toggle("sel", tr.contains(b)));
+});
+
+// Zoom: roda mouse, cubit dua jari, klik dua kali, atau tombol. Geser: seret.
+(function setupZoom() {
+  const cv = $("peta");
+  const toCanvas = (e) => {
+    const r = cv.getBoundingClientRect();
+    return [((e.clientX - r.left) * cv.width) / r.width, ((e.clientY - r.top) * cv.height) / r.height];
+  };
+  const pts = new Map();
+  cv.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const [x, y] = toCanvas(e);
+    zoomAt(x, y, Math.exp(-e.deltaY * 0.0015));
+  }, { passive: false });
+  cv.addEventListener("pointerdown", (e) => {
+    cv.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, toCanvas(e));
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const prev = pts.get(e.pointerId);
+    if (!prev) return;
+    const cur = toCanvas(e);
+    if (pts.size === 1) {
+      panBy(cur[0] - prev[0], cur[1] - prev[1]);
+    } else if (pts.size === 2) {
+      const other = [...pts].find(([id]) => id !== e.pointerId)[1];
+      const before = Math.hypot(prev[0] - other[0], prev[1] - other[1]);
+      const after = Math.hypot(cur[0] - other[0], cur[1] - other[1]);
+      if (before > 0) zoomAt((cur[0] + other[0]) / 2, (cur[1] + other[1]) / 2, after / before);
+    }
+    pts.set(e.pointerId, cur);
+  });
+  const release = (e) => pts.delete(e.pointerId);
+  cv.addEventListener("pointerup", release);
+  cv.addEventListener("pointercancel", release);
+
+  // Info gedung di bawah kursor: nama, nomor baris.kolom, dan posisi dalam studs dari pojok kiri atas.
+  const HOVER_HINT = $("hoverInfo").textContent;
+  const hoverText = ([px, py]) => {
+    const p = lastPlan;
+    if (!p) return HOVER_HINT;
+    const S = cv.width / p.M;
+    const sx = (view.x + px / view.z) / S, sy = (view.y + py / view.z) / S;
+    const inside = (b) => sx >= b.x && sx < b.x + b.w && sy >= b.y && sy < b.y + b.h;
+    const pos = (b) => `x ${b.x}–${b.x + b.w}, y ${b.y}–${b.y + b.h} studs`;
+    const named = [[p.offices, p.cfg.office.name], [p.homes, p.cfg.house.name]];
+    for (const [list, name] of named) {
+      const b = list.find(inside);
+      if (b) return `${name} · baris ${b.row}, kolom ${b.col} · ${pos(b)}`;
+    }
+    const other = [...p.industry, p.desal, ...p.wind].find(inside) || p.solar.find(inside);
+    if (other) return `${FIXED[other.type].name} · ${pos(other)}`;
+    if (p.roads.some(inside)) return `Jalan · x ${Math.floor(sx)}, y ${Math.floor(sy)}`;
+    return `Lahan kosong · x ${Math.floor(sx)}, y ${Math.floor(sy)}`;
+  };
+  cv.addEventListener("pointermove", (e) => {
+    if (pts.size) return;
+    $("hoverInfo").textContent = hoverText(toCanvas(e));
+  });
+  cv.addEventListener("pointerleave", () => { $("hoverInfo").textContent = HOVER_HINT; });
+  cv.addEventListener("dblclick", (e) => { const [x, y] = toCanvas(e); zoomAt(x, y, 2); });
+  const mid = () => cv.width / 2;
+  $("zoomIn").addEventListener("click", () => zoomAt(mid(), mid(), ZOOM_STEP));
+  $("zoomOut").addEventListener("click", () => zoomAt(mid(), mid(), 1 / ZOOM_STEP));
+  $("zoomReset").addEventListener("click", () => { view.z = 1; view.x = 0; view.y = 0; requestDraw(); });
+})();
+
+render();
+</script>
+</body>
+</html>
