@@ -102,6 +102,12 @@ th:first-child, td:first-child { text-align: left; }
 thead th { color: var(--dim); font-weight: 600; font-size: 0.8rem; }
 tr.sel td:first-child { color: var(--accent); }
 td .btn { height: 26px; font-size: 0.8rem; }
+.orient { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 8px; }
+.orient figure { margin: 0; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.orient img { width: 100%; max-height: 360px; object-fit: contain; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; opacity: 0.6; }
+.orient .pick img { border: 2px solid var(--good); opacity: 1; }
+.orient figcaption { font-size: 0.85rem; color: var(--dim); }
+.orient .pick b { color: var(--good); }
 .notes { margin: 0; padding-left: 18px; color: var(--dim); font-size: 0.85rem; display: grid; gap: 4px; }
 </style>
 </head>
@@ -185,8 +191,21 @@ td .btn { height: 26px; font-size: 0.8rem; }
       <p class="hint maphint">Scroll atau cubit dua jari untuk zoom, seret untuk menggeser, klik dua kali untuk memperbesar. Nomor baris.kolom muncul saat diperbesar.</p>
       <p class="maphint hoverinfo" id="hoverInfo" aria-live="polite">Arahkan kursor ke gedung untuk melihat nomor dan posisinya.</p>
       <ul class="legend" id="legend"></ul>
-      <p class="maphint"><button type="button" class="btn" id="exportGame">Export ke game (kota_layout.txt)</button></p>
-      <p class="hint maphint">Simpan file ke <code>D:\Matcha External\logs</code>, lalu jalankan <code>bc_blueprint.lua</code> di Matcha.</p>
+    </div>
+
+    <div class="card">
+      <h2>Arah pasang Grand Skyscraper</h2>
+      <div class="orient">
+        <figure class="pick">
+          <img src="img/grand-6x7.png" alt="Grand Skyscraper dipasang 6×7: sisi ramping menghadap jalan" width="283" height="604" loading="lazy">
+          <figcaption><b>Pakai ini: 6×7.</b> Sisi ramping (6 studs) menghadap jalan, 7 studs ke belakang. Dua baris saling membelakangi, jalan setiap 16 studs.</figcaption>
+        </figure>
+        <figure>
+          <img src="img/grand-7x6.png" alt="Grand Skyscraper dipasang 7×6: sisi lebar menghadap jalan" width="324" height="698" loading="lazy">
+          <figcaption><b>Bukan ini: 7×6.</b> Sisi lebar (7 studs) menghadap jalan. Dengan arah ini gedung yang muat lebih sedikit.</figcaption>
+        </figure>
+      </div>
+      <p class="hint">Arahkan kursor ke gedung di peta untuk melihat sisi mana yang menghadap jalan.</p>
     </div>
 
     <div class="cards">
@@ -368,6 +387,9 @@ const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 const rep = (type, n) => Array.from({ length: n }, () => ({ type, w: FIXED[type].w, h: FIXED[type].h }));
 const area = (list) => list.reduce((a, b) => a + b.w * b.h, 0);
+const ROAD_GRID = 2; // ubin jalan di game 2×2 studs
+const toGrid = (v) => Math.floor(v / ROAD_GRID) * ROAD_GRID;
+const toGridUp = (v) => Math.ceil(v / ROAD_GRID) * ROAD_GRID;
 
 function readCfg() {
   const num = (id, d) => {
@@ -629,7 +651,8 @@ function placeCityUncached(cfg, solarShare) {
   const items = [...rep("steel", s1), ...rep("refinery", f1), ...rep("mine", m1), ...rep("coal", cfg.coal),
     ...rep("mine", m2), ...rep("refinery", f2), ...rep("steel", s2)];
   const band = packBand(items, M, r);
-  const top = clamp(Math.round((M - band.h) / 2), 0, M);
+  // Ubin jalan di game 2×2 dan terkunci ke grid genap; posisi ganjil membuat jalan bergeser saat dipasang.
+  const top = toGrid(clamp(Math.round((M - band.h) / 2), 0, M));
   const down = (o) => ({ ...o, y: o.y + top });
   const industry = band.placed.map(down);
   const roads = band.roads.map((y) => ({ x: 0, y: y + top, w: M, h: r }));
@@ -656,7 +679,8 @@ function placeCityUncached(cfg, solarShare) {
     if (officeW > r) {
       const res = fillZone({ ...z, x: 0, w: officeW - r }, cfg.office, "office", r, cfg.dist, [desal], cfg.office.energy, solarShare);
       // Jalan tegak menempel ke office terakhir, sisa lahan diberikan ke hunian.
-      const right = res.buildings.reduce((m, b) => Math.max(m, b.x + b.w), 0);
+      // Dibulatkan ke atas ke grid genap supaya jalan tegak pas dengan ubin jalan di game.
+      const right = toGridUp(res.buildings.reduce((m, b) => Math.max(m, b.x + b.w), 0));
       if (right > 0) {
         offices.push(...res.buildings);
         roads.push(...res.roads.map((rd) => ({ ...rd, w: right })));
@@ -951,6 +975,22 @@ function numberRows(list) {
   });
 }
 
+// Sisi depan tiap gedung = sisi yang menghadap jalan mendatar terdekat (atas atau bawah).
+// Dipakai di info kursor, supaya arah pasang di game jelas.
+function markFronts(p) {
+  const roadBottoms = [], roadTops = [];
+  for (const rd of p.roads) if (rd.w > rd.h) { roadBottoms.push(rd.y + rd.h); roadTops.push(rd.y); }
+  roadBottoms.sort((a, b) => a - b);
+  roadTops.sort((a, b) => a - b);
+  const lastAtMost = (arr, v) => { let lo = 0, hi = arr.length - 1, r = -Infinity; while (lo <= hi) { const m = (lo + hi) >> 1; if (arr[m] <= v) { r = arr[m]; lo = m + 1; } else hi = m - 1; } return r; };
+  const firstAtLeast = (arr, v) => { let lo = 0, hi = arr.length - 1, r = Infinity; while (lo <= hi) { const m = (lo + hi) >> 1; if (arr[m] >= v) { r = arr[m]; hi = m - 1; } else lo = m + 1; } return r; };
+  for (const b of [...p.offices, ...p.homes]) {
+    const up = b.y - lastAtMost(roadBottoms, b.y);
+    const down = firstAtLeast(roadTops, b.y + b.h) - (b.y + b.h);
+    b.front = up <= down ? "atas" : "bawah";
+  }
+}
+
 const LABEL_MIN_PX = 28; // nomor baru digambar kalau gedung cukup besar di layar
 const LABEL_FONT = '"Archivo", "Arial Narrow", sans-serif';
 
@@ -1099,6 +1139,7 @@ function render() {
   $("pctOut").textContent = Math.round(p.cfg.pct) + "%";
   numberRows(p.offices);
   numberRows(p.homes);
+  markFronts(p);
   draw(p);
   renderLegend(p);
   renderCity(p);
@@ -1136,40 +1177,6 @@ function fillSelect(sel, list, unit, defName) {
   sel.value = String(Math.max(0, list.findIndex((b) => b.name === defName)));
 }
 
-// Gabungkan persegi sejenis yang bersebelahan (ribuan solar 1×2 jadi beberapa blok) supaya overlay di game ringan.
-function mergeRects(list) {
-  const rows = new Map();
-  for (const b of [...list].sort((a, c) => a.y - c.y || a.x - c.x)) {
-    const key = b.y + ":" + b.h;
-    const row = rows.get(key) || [];
-    const last = row[row.length - 1];
-    if (last && last.x + last.w === b.x) last.w += b.w; else row.push({ x: b.x, y: b.y, w: b.w, h: b.h });
-    rows.set(key, row);
-  }
-  const strips = [...rows.values()].flat().sort((a, c) => a.x - c.x || a.w - c.w || a.y - c.y);
-  const out = [];
-  for (const s of strips) {
-    const last = out[out.length - 1];
-    if (last && last.x === s.x && last.w === s.w && last.y + last.h === s.y) last.h += s.h; else out.push({ ...s });
-  }
-  return out;
-}
-
-// Satu baris per persegi: jenis|label|x|y|w|h (studs dari pojok kiri atas lahan). Baris pertama: ukuran lahan.
-function exportLayout(p) {
-  const lines = [`M|${p.M}`];
-  const add = (type, label, b) => lines.push([type, label, b.x, b.y, b.w, b.h].join("|"));
-  p.roads.forEach((b) => add("road", "Jalan", b));
-  p.offices.forEach((b) => add("office", `${p.cfg.office.name} ${b.row}.${b.col}`, b));
-  p.homes.forEach((b) => add("home", `${p.cfg.house.name} ${b.row}.${b.col}`, b));
-  [...p.industry, p.desal].forEach((b) => add(b.type, FIXED[b.type].name, b));
-  p.wind.forEach((b) => add("wind", FIXED.wind.name, b));
-  mergeRects(p.solar).forEach((b) => add("solar", FIXED.solar.name, b));
-  const url = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/plain" }));
-  const a = Object.assign(document.createElement("a"), { href: url, download: "kota_layout.txt" });
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 
 fillSelect($("house"), HOUSES, "org", DEFAULT_HOUSE);
 fillSelect($("office"), OFFICES, "pekerja", DEFAULT_OFFICE);
@@ -1181,7 +1188,6 @@ $("cfg").addEventListener("input", () => {
   requestAnimationFrame(() => { queued = false; render(); });
 });
 $("cfg").addEventListener("submit", (ev) => ev.preventDefault());
-$("exportGame").addEventListener("click", () => { if (lastPlan) exportLayout(lastPlan); });
 $("compareHouse").addEventListener("click", () => compareAll("house"));
 $("compareOffice").addEventListener("click", () => compareAll("office"));
 $("compare").addEventListener("click", (e) => {
@@ -1239,7 +1245,7 @@ $("compare").addEventListener("click", (e) => {
     const named = [[p.offices, p.cfg.office.name], [p.homes, p.cfg.house.name]];
     for (const [list, name] of named) {
       const b = list.find(inside);
-      if (b) return `${name} · baris ${b.row}, kolom ${b.col} · ${pos(b)}`;
+      if (b) return `${name} · baris ${b.row}, kolom ${b.col} · ${pos(b)} · sisi ${b.w} studs menghadap jalan di ${b.front}`;
     }
     const other = [...p.industry, p.desal, ...p.wind].find(inside) || p.solar.find(inside);
     if (other) return `${FIXED[other.type].name} · ${pos(other)}`;
