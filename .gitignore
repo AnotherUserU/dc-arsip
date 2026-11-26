@@ -4,3 +4,6 @@ __pycache__/
 .impeccable/review/
 .impeccable/build/
 .impeccable/questions/
+
+# data datamine game (lokal, jangan dipublikasikan)
+bc-data/

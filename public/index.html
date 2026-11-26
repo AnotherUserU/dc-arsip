@@ -23,11 +23,17 @@
       <nav class="pages" data-i18n-label="pages" aria-label="Halaman"><a href="unit.html" data-i18n="unitsLink">Perbandingan unit</a><a href="konflik.html" data-i18n="conflictsLink">Peta konflik</a><a href="kota.html" data-i18n="cityLink">Perencana kota</a></nav>
     </div>
     <form class="tools" id="tools" role="search">
+      <div class="field field-view">
+        <span id="view-label" data-i18n="viewLabel">Tampilan</span>
+        <div class="views" role="group" aria-labelledby="view-label">
+          <button type="button" data-view="arsip" aria-pressed="true" data-i18n="viewArchive">Arsip</button><button type="button" data-view="data" aria-pressed="false" data-i18n="viewData">Data Game</button>
+        </div>
+      </div>
       <label class="field field-search">
         <span data-i18n="search">Cari laporan</span>
         <input id="q" type="search" data-i18n-placeholder="searchHint" placeholder="faksi, perang, nama…" autocomplete="off">
       </label>
-      <label class="field">
+      <label class="field field-channel">
         <span data-i18n="channel">Channel</span>
         <select id="channel"><option value="" data-i18n="allChannels">Semua channel</option></select>
       </label>
@@ -35,8 +41,9 @@
   </header>
 
   <div class="table">
-    <nav class="rail" data-i18n-label="archiveDates" aria-label="Tanggal arsip">
+    <nav class="rail" id="rail" data-i18n-label="archiveDates" aria-label="Tanggal arsip">
       <ol id="day-list"></ol>
+      <ol id="section-list" hidden></ol>
     </nav>
     <main class="desk">
       <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -44,6 +51,7 @@
         <div class="sheet sheet-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
       </div>
       <button class="more" id="more" type="button" data-i18n="loadMore" hidden>Muat hari sebelumnya</button>
+      <div id="game" hidden></div>
     </main>
   </div>
 

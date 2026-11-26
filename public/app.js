@@ -10,9 +10,12 @@ const els = {
   status: $("status"), feed: $("feed"), more: $("more"),
   lightbox: $("lightbox"), lightboxImg: $("lightbox-img"), lightboxName: $("lightbox-name"),
   lightboxOpen: $("lightbox-open"), lightboxClose: $("lightbox-close"),
+  rail: $("rail"), sectionList: $("section-list"), game: $("game"),
+  views: document.querySelectorAll("[data-view]"),
 };
 
-const state = { index: null, loaded: new Map(), shown: 0 };
+// view: "arsip" (pesan Discord) atau "data" (Data Game dari datamine).
+const state = { index: null, loaded: new Map(), shown: 0, view: "arsip" };
 
 const dayLabel = new Intl.DateTimeFormat(LOCALE, {
   weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
@@ -40,6 +43,23 @@ async function loadDay(date) {
 
 async function loadAllDays() {
   await Promise.all(state.index.days.map((d) => loadDay(d.date)));
+}
+
+// Data Game dimuat hanya saat dibutuhkan (tampilan Data Game atau pencarian), supaya arsip
+// tetap cepat dibuka: script gamedata.js lalu data/game.json.
+let gameReady = null;
+function loadGame() {
+  gameReady ??= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "gamedata.js";
+    script.onload = resolve;
+    script.onerror = () => reject(new Error("gamedata.js gagal dimuat"));
+    document.head.append(script);
+  }).then(() => window.GameData.load()).catch((err) => {
+    gameReady = null;
+    throw err;
+  });
+  return gameReady;
 }
 
 // --- Teks Discord → HTML aman --------------------------------------------
@@ -189,6 +209,23 @@ function renderEmpty(title, text) {
   return el("div", { class: "empty" }, `<strong>${esc(title)}</strong>${esc(text)}`);
 }
 
+// Hasil pencarian dari Data Game, diberi label asalnya (bagian · tabel) dan tautan ke bagiannya.
+function renderGameHits(hits, query) {
+  const limit = window.GameData.SEARCH_LIMIT;
+  const section = el("section", { class: "day game-hits" });
+  section.append(el("div", { class: "day-head" },
+    `<h2>${esc(t("viewData"))}</h2><span>${t("gameRows", { n: hits.length })}</span>`));
+  const list = el("ul", { class: "sheet hit-list" });
+  for (const hit of hits.slice(0, limit)) {
+    list.append(el("li", {}, `<a href="${esc(hit.href)}">`
+      + `<span class="stamp">${esc(t("viewData"))} · ${highlight(esc(hit.origin), query)}</span>`
+      + `<b>${highlight(esc(hit.title), query)}</b><small>${highlight(esc(hit.detail), query)}</small></a>`));
+  }
+  if (hits.length > limit) list.append(el("li", { class: "hit-more" }, esc(t("gameMore", { n: hits.length - limit }))));
+  section.append(list);
+  return section;
+}
+
 function matches(item, query, channel) {
   if (channel && item.channel_id !== channel) return false;
   if (!query) return true;
@@ -234,8 +271,49 @@ function filters() {
   return { query: els.q.value.trim(), channel: els.channel.value };
 }
 
+// Tampilan Data Game: tabel per bagian, rel kiri berisi daftar bagian.
+async function renderGameView() {
+  els.feed.hidden = true;
+  els.more.hidden = true;
+  els.status.textContent = t("gameLoading");
+  try {
+    await loadGame();
+  } catch (err) {
+    els.status.textContent = t("gameError");
+    console.error(err);
+    return;
+  }
+  if (!els.game.dataset.ready) {
+    window.GameData.render(els.game);
+    els.sectionList.replaceChildren(...window.GameData.sections().map(({ id, title }) => {
+      const li = el("li");
+      li.append(el("a", { href: `#${id}` }, `<span class="sec">${esc(title)}</span>`));
+      return li;
+    }));
+    els.game.dataset.ready = "1";
+  }
+  els.status.textContent = "";
+  els.game.hidden = false;
+}
+
+// Rel kiri dan kotak filter mengikuti tampilan yang sedang dipakai.
+function syncViewChrome(showGame) {
+  document.body.classList.toggle("view-data", state.view === "data");
+  els.dayList.hidden = showGame;
+  els.sectionList.hidden = !showGame;
+  els.rail.setAttribute("aria-label", t(showGame ? "gameSections" : "archiveDates"));
+  for (const button of els.views) button.setAttribute("aria-pressed", String(button.dataset.view === state.view));
+}
+
 async function render() {
   const { query, channel } = filters();
+  // Pencarian selalu menampilkan hasil gabungan (arsip + Data Game), apa pun tampilannya.
+  const showGame = state.view === "data" && !query;
+  syncViewChrome(showGame);
+  if (showGame) return renderGameView();
+  els.game.hidden = true;
+  els.feed.hidden = false;
+  if (!state.index) return;
   const filtering = Boolean(query || channel);
   if (filtering) {
     els.status.textContent = t("searching");
@@ -250,15 +328,29 @@ async function render() {
     total += items.length;
     sections.push(renderDay(date, items, query));
   }
-  if (!state.index.days.length) {
+  let gameHits = [];
+  if (query) {
+    try {
+      await loadGame();
+      gameHits = window.GameData.search(query);
+    } catch (err) {
+      console.error(err); // arsip tetap tampil walau Data Game gagal dimuat
+    }
+    if (query !== filters().query) return; // pengguna sudah mengetik kata lain
+  }
+  if (gameHits.length) sections.push(renderGameHits(gameHits, query));
+  if (!state.index.days.length && !gameHits.length) {
     sections.push(renderEmpty(t("emptyTitle"), t("emptyText")));
-  } else if (filtering && !total) {
+  } else if (filtering && !total && !gameHits.length) {
     sections.push(renderEmpty(t("noMatchTitle"), t("noMatchText")));
   }
   els.feed.replaceChildren(...sections);
   els.feed.setAttribute("aria-busy", "false");
   els.more.hidden = filtering || state.shown >= state.index.days.length;
-  els.status.textContent = filtering && total ? t("matching", { n: total }) : "";
+  els.status.textContent = [
+    filtering && total ? t("matching", { n: total }) : "",
+    gameHits.length ? t("gameMatching", { n: gameHits.length }) : "",
+  ].filter(Boolean).join(" ");
   observeDays();
   markTarget();
 }
@@ -292,9 +384,30 @@ function observeDays() {
   els.feed.querySelectorAll(".day").forEach((section) => dayObserver.observe(section));
 }
 
+const isGameHash = (hash) => hash === "data" || hash.startsWith("data-");
+
+// Ganti tampilan. Tautan permanen ikut: Data Game = #data (atau #data-<bagian>), arsip = tanpa #data.
+async function setView(view, { updateHash = true } = {}) {
+  state.view = view;
+  if (updateHash) {
+    const onGame = isGameHash(location.hash.slice(1));
+    if (view === "data" && !onGame) history.replaceState(null, "", "#data");
+    if (view === "arsip" && onGame) history.replaceState(null, "", location.pathname + location.search);
+  }
+  await render();
+}
+
 // Tautan ke tanggal/pesan yang belum dimuat: muat sampai hari itu ikut tampil.
 async function revealHash() {
   const hash = location.hash.slice(1);
+  if (isGameHash(hash)) {
+    // Tautan dari hasil pencarian: kosongkan pencarian supaya bagiannya terlihat.
+    if (els.q.value) els.q.value = "";
+    if (state.view !== "data" || els.game.hidden) await setView("data", { updateHash: false });
+    document.getElementById(hash)?.scrollIntoView();
+    return;
+  }
+  if (state.view === "data" && hash) await setView("arsip", { updateHash: false });
   if (!hash || !state.index) return markTarget();
   let date = hash.startsWith("d-") ? hash.slice(2) : null;
   if (hash.startsWith("m-") && !document.getElementById(hash)) {
@@ -317,6 +430,7 @@ async function init() {
     els.meta.textContent = t("noArchive");
     els.feed.replaceChildren(renderEmpty(t("noDataTitle"), t("noDataText")));
     els.feed.setAttribute("aria-busy", "false");
+    if (isGameHash(location.hash.slice(1))) await revealHash(); // Data Game tetap bisa dibuka
     return;
   }
   const total = state.index.days.reduce((n, d) => n + d.count, 0);
@@ -356,6 +470,11 @@ els.q.addEventListener("input", () => {
 });
 els.tools.addEventListener("submit", (event) => event.preventDefault());
 els.channel.addEventListener("change", () => render().catch(showError));
+for (const button of els.views) {
+  button.addEventListener("click", () => {
+    if (button.dataset.view !== state.view) setView(button.dataset.view).catch(showError);
+  });
+}
 els.more.addEventListener("click", () => {
   state.shown += PAGE_DAYS;
   render().catch(showError);

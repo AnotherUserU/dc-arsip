@@ -463,6 +463,81 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
 .timeline a { color: var(--ink-faint); font-size: 0.875rem; white-space: nowrap; }
 .timeline a:hover { color: var(--ink); }
 
+/* --- Pilihan tampilan: Arsip | Data Game ------------------------------- */
+
+.field-view { grid-column: 1 / -1; }
+.views { display: inline-flex; width: max-content; border: 1px solid var(--chalk-dim); border-radius: 2px; }
+.views button {
+  min-height: 40px;
+  padding: 6px 18px;
+  border: 0;
+  background: transparent;
+  color: var(--chalk-dim);
+  font: 700 0.9375rem var(--font);
+  font-stretch: 68%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.views button + button { border-left: 1px solid var(--chalk-dim); }
+.views button:hover { color: var(--chalk); }
+.views button[aria-pressed="true"] { background: var(--chalk); color: var(--table); }
+/* Filter channel hanya berlaku untuk arsip. */
+.view-data .field-channel { visibility: hidden; }
+.rail .sec { font-size: 1.0625rem; font-weight: 720; font-stretch: 68%; letter-spacing: 0.03em; text-transform: uppercase; color: var(--chalk); }
+.rail ol[hidden] { display: none; }
+
+/* --- Data Game: tabel datamine di atas lembar ---------------------------- */
+
+/* Tabel data lebih lebar dari kolom bacaan arsip. */
+.view-data .table { grid-template-columns: 9rem minmax(0, 62rem); }
+#game[hidden], #feed[hidden] { display: none; }
+.game-source { margin: 0 0 28px; color: var(--chalk-dim); font-size: 0.9375rem; max-width: 68ch; }
+.game-section { scroll-margin-top: 24px; }
+.game-sheet { padding: 20px 22px 18px; }
+.game-sheet h3 { margin: 0 0 4px; font-size: 1.125rem; font-weight: 760; font-stretch: 68%; letter-spacing: 0.02em; text-transform: uppercase; }
+.game-note { margin: 0 0 12px; color: var(--ink-faint); font-size: 0.875rem; }
+.table-scroll { overflow-x: auto; max-width: 100%; border-top: 1.5px solid var(--ink-soft); }
+.table-scroll:focus-visible { outline-offset: 2px; }
+.game-table { border-collapse: collapse; width: 100%; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+.game-table th, .game-table td { padding: 6px 12px 6px 0; text-align: left; vertical-align: top; }
+.game-table .num { text-align: right; white-space: nowrap; }
+.game-table td { color: var(--ink-soft); max-width: 36rem; }
+.game-table td:first-child { color: var(--ink); font-weight: 650; white-space: nowrap; }
+.game-table tbody tr + tr { border-top: 1px solid var(--paper-edge); }
+.game-table td.best { color: var(--ink); font-weight: 800; background: var(--pencil-wash); box-shadow: inset 0 -2px 0 var(--pencil); }
+.game-table th button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font: 700 0.75rem var(--font);
+  font-stretch: 68%;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.game-table th button:hover { color: var(--ink); }
+.game-table th[aria-sort="ascending"] button::after { content: "▲"; color: var(--pencil); font-size: 0.625rem; }
+.game-table th[aria-sort="descending"] button::after { content: "▼"; color: var(--pencil); font-size: 0.625rem; }
+.game-list { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; font-size: 1rem; line-height: 1.55; max-width: 68ch; }
+
+/* Hasil pencarian dari Data Game. */
+.hit-list { list-style: none; padding: 8px 22px; }
+.hit-list li + li { border-top: 1px solid var(--paper-edge); }
+.hit-list a { display: grid; gap: 2px; padding: 12px 0; text-decoration: none; }
+.hit-list a:hover b { text-decoration: underline; text-decoration-color: var(--pencil); }
+.hit-list .stamp { justify-self: start; margin-bottom: 4px; }
+.hit-list b { font-size: 1.0625rem; }
+.hit-list small { color: var(--ink-faint); font-size: 0.875rem; overflow-wrap: anywhere; }
+.hit-more { padding: 12px 0; color: var(--ink-faint); font-size: 0.875rem; }
+
 /* --- Gerak: satu momen, pensil melingkari laporan tertaut ---------------- */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -501,6 +576,11 @@ mark { background: var(--pencil-wash); color: inherit; box-shadow: inset 0 -2px 
   .clock { font-size: 1.5rem; }
   .body { font-size: 1rem; }
   .pencil { inset: -8px -6px; width: calc(100% + 12px); height: calc(100% + 16px); }
+
+  .view-data .table { grid-template-columns: minmax(0, 1fr); }
+  .view-data .field-channel { display: none; }
+  .game-sheet { padding: 16px 14px 14px; }
+  .hit-list { padding: 4px 16px; }
 
   .units { padding: 24px 16px 64px; }
   .conflicts { padding: 24px 16px 64px; }
